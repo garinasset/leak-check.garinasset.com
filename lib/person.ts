@@ -71,16 +71,24 @@ export async function getPersonRecordCount(): Promise<string | null> {
   return text ? formatRecordCount(text) : null;
 }
 
-export async function getPersonData(q: string): Promise<Record<string, (string | number)[]>> {
-  const normalizedQuery = normalizeQuery(q);
+export async function getPersonData(
+  q: string,
+  realIP?: string
+): Promise<Record<string, (string | number)[]>> {
 
+  const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
   const response = await fetch(BACKEND_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+
+      // ⭐关键：透传真实 IP
+      "X-Real-IP": realIP ?? "",
+      "X-Forwarded-For": realIP ?? ""
+    },
     body: JSON.stringify({ q: normalizedQuery }),
-    // 避免在构建时缓存敏感数据
     cache: "no-store",
   });
 
@@ -100,8 +108,12 @@ export async function getPersonData(q: string): Promise<Record<string, (string |
     const value = data[key];
 
     if (Array.isArray(value)) {
-      sanitized[key] = value
-        .filter((item): item is string | number => item !== null && item !== "" && (typeof item === "string" || typeof item === "number"));
+      sanitized[key] = value.filter(
+        (item): item is string | number =>
+          item !== null &&
+          item !== "" &&
+          (typeof item === "string" || typeof item === "number")
+      );
     } else if (value === null || value === undefined) {
       sanitized[key] = [];
     } else if (typeof value === "string" || typeof value === "number") {

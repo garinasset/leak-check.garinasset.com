@@ -3,18 +3,33 @@ import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
 import Image from "next/image";
 
+import { headers } from "next/headers";
+
 async function searchPerson(formData: FormData) {
   "use server";
 
-  const query = normalizeQuery(formData.get("q")?.toString() ?? "");
+  const query = normalizeQuery(
+    formData.get("q")?.toString() ?? ""
+  );
+
+  // =========================
+  // ⭐ 获取真实用户 IP
+  // =========================
+  const headerList = await headers();
+
+  const realIP =
+    headerList.get("x-forwarded-for")?.split(",")[0] ||
+    headerList.get("x-real-ip") ||
+    "";
 
   try {
-    const result = await getPersonData(query);
+    const result = await getPersonData(query, realIP);
+
     return { query, result };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "查询失败，请稍候再试。";
+    const errorMessage =
+      error instanceof Error ? error.message : "查询失败，请稍候再试。";
 
-    // 检查是否是422错误
     if (errorMessage.includes("422")) {
       return { status: 422 };
     }
