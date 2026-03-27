@@ -55,10 +55,15 @@ export function formatRecordCount(raw: string): string {
   return new Intl.NumberFormat("en-US").format(Number(digitsOnly));
 }
 
-export async function getPersonRecordCount(): Promise<string | null> {
+export async function getPersonRecordCount(realIP?: string): Promise<string | null> {
   const response = await fetch(PERSON_COUNT_URL, {
     method: "GET",
-    headers: { accept: "text/plain" },
+    headers: {
+      accept: "text/plain",
+      // ⭐关键：透传真实 IP
+      "X-Real-IP": realIP ?? "",
+      "X-Forwarded-For": realIP ?? ""
+    },
     cache: "no-store",
   });
 

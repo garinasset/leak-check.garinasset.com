@@ -39,7 +39,14 @@ async function searchPerson(formData: FormData) {
 }
 
 export default async function HomePage() {
-  const recordCount = await getPersonRecordCount().catch(() => null);
+  const headerList = await headers();
+
+  const realIP =
+    headerList.get("x-forwarded-for")?.split(",")[0] ||
+    headerList.get("x-real-ip") ||
+    "";
+
+  const recordCount = await getPersonRecordCount(realIP).catch(() => null);
 
   return (
     <div className="min-h-screen flex flex-col font-mono">
