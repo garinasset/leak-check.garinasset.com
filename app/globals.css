@@ -3,13 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --link-color: rgb(0, 0, 153);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +21,24 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: var(--link-color);
+  /* 使用你定义的颜色 */
+  text-decoration-line: underline;
+  /* 下划线 */
+  text-decoration-style: dashed;
+  /* 虚线 */
+  text-underline-offset: 3px;
+  /* 下划线间距（更好看） */
+  transition: all 0.2s ease;
+  /* 平滑过渡 */
+}
+
+a:hover {
+  text-decoration-style: solid;
+  /* 变实线 */
+  font-weight: 600;
+  /* 加粗 */
 }
