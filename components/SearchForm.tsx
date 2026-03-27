@@ -216,7 +216,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
             type="submit"
             disabled={!hasHydrated || isPending || !normalizedQuery}
             suppressHydrationWarning
-            className="rounded-full border border-[#d0d7e2] bg-[#111827] text-white font-medium text-sm m-2 px-5 py-2 min-w-[5.5rem] h-10 hover:bg-[#1f2937] hover:border-[#111827] transition disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation shadow-[0_10px_24px_rgba(15,23,42,0.12)]"
+            className="rounded-full border border-[#d0d7e2] bg-[#111827] text-white font-medium text-sm px-5 py-2 min-w-[5.5rem] h-10 hover:bg-[#1f2937] hover:border-[#111827] transition disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation shadow-[0_10px_24px_rgba(15,23,42,0.12)]"
             style={{ WebkitTapHighlightColor: 'transparent' }}
             onTouchStart={() => { }}
             onTouchEnd={() => { }}
