@@ -70,6 +70,11 @@ export default async function HomePage() {
       <Footer>
         <div>
           <a href="#">
+            公众利益导向
+          </a>
+        </div>
+        <div>
+          <a href="#">
             “不记录”「查询记录」.
           </a>
         </div>
@@ -78,16 +83,7 @@ export default async function HomePage() {
             “不提供” 「敏感信息」.
           </a>
         </div>
-        <div>
-          <a href="#">
-            “可删除” 「指定信息」.
-          </a>
-        </div>
-        <div>
-          <a href="#">
-            公众利益导向
-          </a>
-        </div>
+
         <div>
           <a href="mailto:contact@garinasset.com">
             联系我们
