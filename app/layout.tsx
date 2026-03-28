@@ -4,12 +4,12 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    default: '个人信息 “泄露” 检查工具 - 嘉林数据',
+    default: '个人信息 “泄露” 检查 - 嘉林数据',
     template: '%s | 信息安全查询',
   },
 
   description:
-    '快速查询个人信息是否存在数据泄露风险, 支持身份证、手机号、邮箱、QQ 等多维度检索，用于信息安全检测与隐私风险排查。',
+    '快速检查个人信息是否存在数据泄露风险, 支持身份证、手机号、邮箱、QQ 等多维度检索，用于信息安全检测与隐私风险排查。',
 
   keywords: [
     '信息泄露查询',
