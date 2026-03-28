@@ -171,7 +171,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           <div className="mt-1 text-sm leading-6 font-medium tracking-[0.08em] text-[#94a3b8]">
             {recordCount ? (
               <>
-                搜索{" "}
+                检查{" "}
                 <span className="text-[var(--foreground)]">
                   {recordCount}
                 </span>{" "}
