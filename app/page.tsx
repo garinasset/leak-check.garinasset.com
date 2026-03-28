@@ -83,7 +83,11 @@ export default async function HomePage() {
             “不提供” 「敏感信息」.
           </a>
         </div>
-
+        <div>
+          <a href="https://github.com/garinasset/breach">
+            开放源代码
+          </a>
+        </div>
         <div>
           <a href="mailto:contact@garinasset.com">
             联系我们
