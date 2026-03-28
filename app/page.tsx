@@ -75,12 +75,12 @@ export default async function HomePage() {
         </div>
         <div>
           <a href="#">
-            “不记录”「查询记录」.
+            “不记录”「查询记录」
           </a>
         </div>
         <div>
           <a href="#">
-            “不提供” 「敏感信息」.
+            “不提供” 「敏感信息」
           </a>
         </div>
         <div>
