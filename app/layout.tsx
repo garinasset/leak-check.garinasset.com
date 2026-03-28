@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    default: '个人信息 “泄露” 查询 - 嘉林数据',
+    default: '个人信息 “泄露” 检查工具 - 嘉林数据',
     template: '%s | 信息安全查询',
   },
 
@@ -29,18 +29,18 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://breach.garinasset.com'),
 
   openGraph: {
-    title: '个人信息泄露查询工具',
+    title: '个人信息泄露检查工具',
     description:
       '检测你的手机号、身份证、邮箱等是否出现在泄露数据库中，快速识别隐私风险。',
     url: 'https://breach.garinasset.com',
-    siteName: '信息泄露查询工具',
+    siteName: '个人信息泄露检查工具',
     type: 'website',
     locale: 'zh_CN',
   },
 
   twitter: {
     card: 'summary_large_image',
-    title: '个人信息泄露查询工具',
+    title: '个人信息泄露检查工具',
     description: '快速检测个人信息是否泄露',
   },
 
