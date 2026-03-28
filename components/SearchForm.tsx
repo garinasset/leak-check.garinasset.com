@@ -15,12 +15,12 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   const [is422Error, setIs422Error] = useState(false);
   const [invalidQuery, setInvalidQuery] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
-  const [placeholder, setPlaceholder] = useState("输入 身份证 | 手机号 | 邮箱 | QQ 号");
+  const [placeholder, setPlaceholder] = useState("输入 身份证 或 手机号 或 邮箱 或 QQ 号");
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const searchBoxRef = useRef<HTMLDivElement>(null);
   const normalizedQuery = normalizeQuery(inputValue);
-  const defaultPlaceholder = "输入 身份证 | 手机号 | 邮箱 | QQ 号";
+  const defaultPlaceholder = "输入 身份证 或 手机号 或 邮箱 或 QQ 号";
 
   const resetFormState = () => {
     formRef.current?.reset();
@@ -238,7 +238,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
             <div className="text-[#c2410c] text-[0.72rem] tracking-[0.35em] uppercase">Input Status</div>
             <div className="mt-4 text-[#ea580c] text-[2.75rem] leading-none font-bold sm:text-[4rem]">INVALID</div>
             <div className="mt-4 text-[#7c2d12] text-base sm:text-lg">
-              需要输入 身份证 | 手机号 | QQ 号 | 邮箱
+              需要输入 身份证 或 手机号 或 邮箱 或 QQ 号
             </div>
             <div className="mt-5 rounded-2xl border border-[#fed7aa] bg-white px-4 py-3 text-sm text-[#9a3412] break-all">
               当前输入：<span className="text-[#c2410c]">{invalidQuery}</span>
