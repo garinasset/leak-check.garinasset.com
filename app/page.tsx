@@ -1,7 +1,7 @@
 import { getPersonData, getPersonRecordCount, normalizeQuery } from "../lib/person";
 import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
-import Image from "next/image";
+import Logo from "../components/Logo";
 
 import { headers } from "next/headers";
 
@@ -51,15 +51,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col font-mono">
       <div className="flex flex-col items-center mt-6 mb-4">
-        <Image
-          src="/logo.png"
-          alt="GARINASSET"
-          width={128}
-          height={128}
-          loading="eager"
-          priority
-          className="max-w-[8em] max-h-[8em] object-contain"
-        />
+        <Logo />
 
       </div>
 
