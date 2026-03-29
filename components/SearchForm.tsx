@@ -263,7 +263,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               </div>
           </div>
         ) : (
-          <div className="w-full max-w-[43em] mx-auto">
+          <div className="w-full max-w-[43em] mx-auto px-2">
               {/* 第一个特殊字段：SVG */}
               <div className="flex flex-col items-center space-y-2 mb-6">
                 <QueryTypeDisplay query={normalizedQuery} />
