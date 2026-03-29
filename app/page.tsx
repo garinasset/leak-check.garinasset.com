@@ -51,8 +51,6 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col font-mono">
       <div className="flex flex-col items-center mt-6 mb-4">
-        {/* Logo 选择：注释原 Image，选用大字版本 */}
-
         <Image
           src="/logo.png"
           alt="GARINASSET"
@@ -69,36 +67,20 @@ export default async function HomePage() {
 
       <Footer>
         <div>
-          <a href="#">
-            公众利益导向
-          </a>
-        </div>
-        <div>
-          <a href="#">
-            “不记录”「查询记录」
-          </a>
-        </div>
-        <div>
-          <a href="#">
-            “不提供” 「敏感信息」
-          </a>
-        </div>
-        <div>
           <a href="https://github.com/garinasset/breach">
-            开放源代码
+            <span className="font-normal">源代码 : </span><span className="font-bold">开放</span>
           </a>
         </div>
         <div>
           <a href="mailto:contact@garinasset.com">
-            联系我们
+            <span className="font-normal">联系我们 : </span><span className="font-bold">Email</span>
           </a>
         </div>
         <div >
           <a href="https://www.garinasset.com">
-            嘉林数据
+          <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
           </a>
         </div>
-
       </Footer>
     </div>
   );

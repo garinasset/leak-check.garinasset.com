@@ -2,11 +2,15 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import { FIELDS, fieldNameMap, isValidPersonQuery, normalizeQuery } from "../lib/person";
+import QueryTypeDisplay from "./QueryTypeDisplay";
 
 interface SearchFormProps {
   searchAction: (formData: FormData) => Promise<{ query?: string; result?: Record<string, (string | number)[]>; error?: string; status?: number }>;
   recordCount?: string | null;
 }
+
+const DEFAULT_PLACEHOLDER = "输入 身份证 或 手机号 或 邮箱 或 QQ 号";
+const SHAKE_DURATION = 1000;
 
 export default function SearchForm({ searchAction, recordCount }: SearchFormProps) {
   const [inputValue, setInputValue] = useState("");
@@ -15,21 +19,25 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   const [is422Error, setIs422Error] = useState(false);
   const [invalidQuery, setInvalidQuery] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
-  const [placeholder, setPlaceholder] = useState("输入 身份证 或 手机号 或 邮箱 或 QQ 号");
+  const [userIsEditing, setUserIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const searchBoxRef = useRef<HTMLDivElement>(null);
   const normalizedQuery = normalizeQuery(inputValue);
-  const defaultPlaceholder = "输入 身份证 或 手机号 或 邮箱 或 QQ 号";
+
+  // 清除所有查询状态
+  const clearQueryState = () => {
+    setErrorMessage("");
+    setIs422Error(false);
+    setInvalidQuery("");
+    setResult({});
+  };
 
   const resetFormState = () => {
     formRef.current?.reset();
     setInputValue("");
-    setResult({});
-    setErrorMessage("");
-    setIs422Error(false);
-    setInvalidQuery("");
-    setPlaceholder(defaultPlaceholder);
+    clearQueryState();
+    setUserIsEditing(false);
     searchBoxRef.current?.classList.remove("shake");
   };
 
@@ -38,33 +46,28 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
     setInvalidQuery(query);
     setErrorMessage("");
     setResult({});
+    setUserIsEditing(false);
 
     if (searchBoxRef.current) {
       searchBoxRef.current.classList.add("shake");
+      setTimeout(() => {
+        searchBoxRef.current?.classList.remove("shake");
+      }, SHAKE_DURATION);
     }
-
-    const oldInputValue = query;
-    setInputValue("");
-    setPlaceholder(defaultPlaceholder);
-
-    window.setTimeout(() => {
-      setInputValue(oldInputValue);
-      setPlaceholder(defaultPlaceholder);
-      searchBoxRef.current?.classList.remove("shake");
-    }, 1000);
   };
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      resetFormState();
-      setHasHydrated(true);
-    }, 0);
-
-    const handlePageShow = () => {
+    const initForm = () => {
       resetFormState();
       setHasHydrated(true);
     };
 
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        initForm();
+      }
+    };
+    const timer = window.setTimeout(initForm, 0);
     window.addEventListener("pageshow", handlePageShow);
 
     return () => {
@@ -77,31 +80,25 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
     e.preventDefault();
     e.stopPropagation();
 
-    const nextQuery = normalizedQuery;
+    if (!normalizedQuery) return;
 
-    if (!nextQuery) {
-      return;
-    }
-
-    if (!isValidPersonQuery(nextQuery)) {
-      showInvalidState(nextQuery);
+    if (!isValidPersonQuery(normalizedQuery)) {
+      showInvalidState(normalizedQuery);
       return;
     }
 
     const formData = new FormData();
-    formData.set("q", nextQuery);
+    formData.set("q", normalizedQuery);
 
-    setErrorMessage("");
-    setIs422Error(false);
-    setInvalidQuery("");
-    setResult({});
+    clearQueryState();
+    setUserIsEditing(false);
 
     startTransition(async () => {
       try {
         const response = await searchAction(formData);
 
         if (response.status === 422) {
-          showInvalidState(nextQuery);
+          showInvalidState(normalizedQuery);
         } else if (response.error) {
           setErrorMessage(response.error);
         } else if (response.result) {
@@ -117,15 +114,9 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
   const syncInputValue = (value: string) => {
     setInputValue(value);
-    // 清除422错误状态、shake 动画和错误 placeholder
-    if (is422Error) {
-      setIs422Error(false);
-      setInvalidQuery("");
-      setPlaceholder(defaultPlaceholder);
-      if (searchBoxRef.current) {
-        searchBoxRef.current.classList.remove("shake");
-      }
-    }
+    setUserIsEditing(true);
+    clearQueryState();
+    searchBoxRef.current?.classList.remove("shake");
   };
 
   const filteredFields = FIELDS.filter(
@@ -166,9 +157,9 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
       `}</style>
 
-      <form ref={formRef} autoComplete="off" noValidate className="flex flex-col items-center w-full mb-12" onSubmit={handleSubmit}>
-        <div className="w-full max-w-[43em] px-2 mb-4 text-center">
-          <div className="mt-1 text-sm leading-6 font-medium tracking-[0.08em] text-[#94a3b8]">
+      <form ref={formRef} autoComplete="off" noValidate className="flex flex-col items-center w-full" onSubmit={handleSubmit}>
+        <div className="w-full max-w-[43em] mx-auto mb-4 px-2 text-center">
+          <div className="text-sm leading-6 font-medium tracking-[0.08em] text-[#94a3b8]">
             {recordCount ? (
               <>
                 检查{" "}
@@ -183,7 +174,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           </div>
         </div>
 
-        <div className="w-full max-w-[43em] px-2">
+        <div className="w-full max-w-[43em] mx-auto px-2">
           <div ref={searchBoxRef} className={`flex items-center min-h-[3.375em] rounded-[1.75em] border border-[#d5d9e2] bg-white px-4 shadow-[0_14px_40px_rgba(15,23,42,0.08)] ${is422Error ? "shake border-[#e67b55]" : ""}`}>
             <svg
               className="text-[#64748b] w-5 h-5 flex-shrink-0"
@@ -198,7 +189,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               value={inputValue}
               onChange={(e) => syncInputValue(e.currentTarget.value)}
               className="flex-1 bg-transparent border-none outline-none text-[#0f172a] placeholder-[#94a3b8] text-base px-3"
-              placeholder={placeholder}
+              placeholder={DEFAULT_PLACEHOLDER}
               autoComplete="off"
               data-form-type="other"
               disabled={isPending}
@@ -211,7 +202,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           </div>
         </div>
 
-        <div className="flex justify-center flex-wrap mt-4 w-full max-w-[43em]">
+        <div className="flex justify-center flex-wrap mt-4 w-full max-w-[43em] mx-auto">
           <button
             type="submit"
             disabled={!hasHydrated || isPending || !normalizedQuery}
@@ -221,74 +212,93 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
             onTouchStart={() => { }}
             onTouchEnd={() => { }}
           >
-            {isPending ? "搜索中..." : "搜索"}
+            {isPending ? "查询中 ···" : "查询"}
           </button>
         </div>
       </form>
 
-      <div className="w-full px-4 pb-8 flex justify-center">
+      <div className="w-full pb-8 mt-6">
         {errorMessage && (
-          <div className="w-full max-w-[43em] mb-4 rounded-3xl border border-[#fecaca] bg-[#fff1f2] px-5 py-4 text-[#b42318] text-sm shadow-[0_10px_24px_rgba(190,24,93,0.08)]">
+          <div className="w-full max-w-[43em] mx-auto rounded-3xl border border-[#fecaca] bg-[#fff1f2] px-5 py-4 text-[#b42318] text-sm shadow-[0_10px_24px_rgba(190,24,93,0.08)]">
             {errorMessage}
           </div>
         )}
 
-        {is422Error && !isPending ? (
-          <div className="w-full max-w-[43em] rounded-[2rem] border border-[#fed7aa] bg-[#fff7ed] px-6 py-10 text-center shadow-[0_16px_40px_rgba(245,158,11,0.08)]">
-            <div className="text-[#c2410c] text-[0.72rem] tracking-[0.35em] uppercase">Input Status</div>
-            <div className="mt-4 text-[#ea580c] text-[2.75rem] leading-none font-bold sm:text-[4rem]">INVALID</div>
-            <div className="mt-4 text-[#7c2d12] text-base sm:text-lg">
-              需要输入 身份证 或 手机号 或 邮箱 或 QQ 号
-            </div>
-            <div className="mt-5 rounded-2xl border border-[#fed7aa] bg-white px-4 py-3 text-sm text-[#9a3412] break-all">
-              当前输入：<span className="text-[#c2410c]">{invalidQuery}</span>
-            </div>
-            <div className="mt-4 text-sm text-[#9a3412]/70">
-              请确认您的输入内容 是否包含特殊字符 或 多余空格
-            </div>
-          </div>
-        ) : Object.keys(result).length === 0 && !isPending ? null : filteredFields.length === 0 && !isPending ? (
-          <div className="w-full max-w-[43em] rounded-[2rem] border border-[#dbe3ef] bg-[#f8fafc] px-6 py-10 text-center shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
-            <div className="text-[#64748b] text-[0.72rem] tracking-[0.35em] uppercase">Scan Result</div>
-            <div className="mt-4 text-[#0f172a] text-[4rem] leading-none font-bold sm:text-[5rem]">SAFE</div>
-            <div className="mt-3 text-[#475569] text-base sm:text-lg">未发现泄漏信息</div>
-          </div>
-        ) : (
-          <div className="w-full max-w-[52rem] py-3">
-            <div className="overflow-hidden rounded-[2rem] border border-[#dbe3ef] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
-              <div className="border-b border-[#e7edf5] px-6 py-5 text-center">
-                <div className="text-[#64748b] text-[0.72rem] tracking-[0.35em] uppercase">Search Result</div>
-                <div className="mt-2 text-[#0f172a] text-2xl font-semibold">搜索结果</div>
-                <div className="mt-2 text-sm text-[#64748b] break-all">
-                  查询内容：<span className="text-[#0f172a]">{normalizedQuery}</span>
+        {userIsEditing && inputValue ? (
+          <div className="w-full max-w-[43em] mx-auto">
+              <div className="flex flex-col items-center space-y-2 mb-6">
+                <QueryTypeDisplay query={normalizedQuery} />
+                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                  {normalizedQuery}
                 </div>
               </div>
+          </div>
+        ) : is422Error && inputValue ? (
+          <div className="w-full max-w-[43em] mx-auto">
+              {/* 第一个特殊字段：SVG */}
+              <div className="flex flex-col items-center space-y-2 mb-6">
+                <QueryTypeDisplay query={normalizedQuery} />
+                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                  {normalizedQuery}
+                </div>
 
-              <table className="w-full table-fixed border-collapse">
-                <tbody>
+                <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
+                  <span>⛔️ 需要输入 身份证 或 手机号 或 邮箱 或 QQ 号</span>
+                </div>
+
+              </div>
+          </div>
+        ) : Object.keys(result).length === 0 && !isPending ? null : filteredFields.length === 0 && !isPending ? (
+          <div className="w-full max-w-[43em] mx-auto">
+              {/* 第一个特殊字段：SVG */}
+              <div className="flex flex-col items-center space-y-2 mb-6">
+                <QueryTypeDisplay query={normalizedQuery} />
+                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                  {normalizedQuery}
+                </div>
+                <div className="bg-green-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
+                  <span>🔒 安全: 未检测到个人信息 “泄漏”</span>
+                </div>
+
+              </div>
+          </div>
+        ) : (
+          <div className="w-full max-w-[43em] mx-auto">
+              {/* 第一个特殊字段：SVG */}
+              <div className="flex flex-col items-center space-y-2 mb-6">
+                <QueryTypeDisplay query={normalizedQuery} />
+                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                  {normalizedQuery}
+                </div>
+
+              </div>
+              <div className="mt-6">
+                <div className="space-y-px">
                   {filteredFields.map((field, idx) => {
                     const items = result[field] ?? [];
+                    const isLastRow = idx === filteredFields.length - 1;
                     return (
-                      // text-[#94a3b8] text-red-400 text-[#0f172a] text-red-400 text-[#e11d48]
-                      <tr key={idx} className="border-t border-[#d9e1ea] first:border-t-0 ">
-                        <th className="w-1/2 border-r border-[#d9e1ea] px-6 text-right align-middle text-[0.9rem] tracking-[0.08em] text-[#0f172a]">
+                      <div key={idx} className={`flex w-full ${!isLastRow ? 'border-b border-[#e2e8f0]' : ''}`}>
+                        {/* 第一列：字段名 - 右对齐 */}
+                        <div className="w-1/2 font-normal text-[0.75rem] px-4 py-3 result-name-color flex items-center justify-end border-r border-[#e2e8f0] min-w-0">
                           {fieldNameMap[field] || field}
-                        </th>
-                        <td className="w-1/2 px-6 py-3 text-left align-middle text-[0.9rem] leading-5 text-[#0f172a]">
-                          <div className="space-y-2">
-                            {items.map((item: string | number, i: number) => (
-                              <div key={i} className="break-words">
-                                {item}
-                              </div>
-                            ))}
-                          </div>
-                        </td>
-                      </tr>
+                        </div>
+                        {/* 第二列：字段值 - 左对齐 */}
+                        <div className="w-1/2 flex flex-col gap-2 px-4 py-3 justify-start min-w-0">
+                          {items.map((item: string | number, i: number) => (
+                            <div
+                              key={i}
+                              className="font-bold break-all text-[0.75rem] result-text-color"
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              </div>
           </div>
         )}
       </div>

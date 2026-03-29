@@ -12,12 +12,20 @@ export const fieldNameMap: Record<string, string> = {
   address: "地址",
   car: "车辆配置",
   email: "邮箱",
-  qq: "QQ 号",
+  qq: "QQ",
   weibo: "微博",
   contact: "对公称呼",
   company: "单位",
-  source: "被泄漏途径",
+  source: "泄漏源头",
 };
+
+// 验证规则常量
+const VALIDATION_PATTERNS = {
+  idCard: /^(?:\d{15}|\d{17}[\dXx])$/,
+  phone: /^1[3-9]\d{9}$/,
+  email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
+  qq: /^[1-9]\d{4,10}$/,
+} as const;
 
 const BACKEND_URL = process.env.PERSON_BACKEND_URL ?? "http://172.16.1.4/breach/dig/masking";
 const PERSON_COUNT_URL = process.env.PERSON_COUNT_URL ?? "http://172.16.1.4/breach/";
@@ -30,20 +38,25 @@ export function normalizeQuery(raw: string): string {
     .trim();
 }
 
+function validateQueryByPattern(query: string, pattern: RegExp): boolean {
+  return pattern.test(query);
+}
+
+function isValidQQ(query: string): boolean {
+  return validateQueryByPattern(query, VALIDATION_PATTERNS.qq) &&
+    !(query.length === 11 && query.startsWith("1"));
+}
+
 export function isValidPersonQuery(raw: string): boolean {
   const query = normalizeQuery(raw);
+  if (!query) return false;
 
-  if (!query) {
-    return false;
-  }
-
-  const isIdCard = /^(?:\d{15}|\d{17}[\dXx])$/.test(query);
-  const isPhone = /^1[3-9]\d{9}$/.test(query);
-  const isQQ = /^[1-9]\d{4,11}$/.test(query);
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(query);
-
-  return isIdCard || isPhone || isQQ || isEmail;
+  return validateQueryByPattern(query, VALIDATION_PATTERNS.idCard) ||
+    validateQueryByPattern(query, VALIDATION_PATTERNS.phone) ||
+    isValidQQ(query) ||
+    validateQueryByPattern(query, VALIDATION_PATTERNS.email);
 }
+
 
 export function formatRecordCount(raw: string): string {
   const digitsOnly = raw.replace(/[^\d]/g, "");
