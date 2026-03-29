@@ -27,8 +27,8 @@ const VALIDATION_PATTERNS = {
   qq: /^[1-9]\d{4,10}$/,
 } as const;
 
-const BACKEND_URL = process.env.PERSON_BACKEND_URL ?? "http://172.16.1.4/breach/dig/masking";
-const PERSON_COUNT_URL = process.env.PERSON_COUNT_URL ?? "http://172.16.1.4/breach/";
+const BACKEND_URL = process.env.PERSON_BACKEND_URL ?? "http://172.16.1.4/leak-check/dig/masking";
+const PERSON_COUNT_URL = process.env.PERSON_COUNT_URL ?? "http://172.16.1.4/leak-check/";
 
 export function normalizeQuery(raw: string): string {
   return raw

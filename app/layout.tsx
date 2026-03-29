@@ -26,13 +26,13 @@ export const metadata: Metadata = {
 
   creator: '嘉林资产',
 
-  metadataBase: new URL('https://breach.garinasset.com'),
+  metadataBase: new URL('https://leak-check.garinasset.com'),
 
   openGraph: {
     title: '个人信息泄露检测工具',
     description:
       '检测你的手机号、身份证、邮箱等是否出现在泄露数据库中，快速识别隐私风险。',
-    url: 'https://breach.garinasset.com',
+    url: 'https://leak-check.garinasset.com',
     siteName: '个人信息泄露检测工具',
     type: 'website',
     locale: 'zh_CN',

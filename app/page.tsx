@@ -59,7 +59,7 @@ export default async function HomePage() {
 
       <Footer>
         <div>
-          <a href="https://github.com/garinasset/breach">
+          <a href="https://github.com/garinasset/leak-check">
             <span className="font-normal">源代码 : </span><span className="font-bold">开放</span>
           </a>
         </div>
