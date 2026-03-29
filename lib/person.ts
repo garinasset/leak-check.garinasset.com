@@ -16,7 +16,7 @@ export const fieldNameMap: Record<string, string> = {
   weibo: "微博",
   contact: "对公称谓",
   company: "单位",
-  source: "被泄漏途径",
+  source: "泄漏链条 ( 数据库被盗 或 接口防护缺失 )",
 };
 
 // 验证规则常量
