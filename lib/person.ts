@@ -10,13 +10,13 @@ export const fieldNameMap: Record<string, string> = {
   nickname: "昵称",
   phone: "电话",
   address: "地址",
-  car: "车辆配置",
+  car: "车辆",
   email: "邮箱",
   qq: "QQ",
   weibo: "微博",
-  contact: "对公称呼",
+  contact: "对公称谓",
   company: "单位",
-  source: "泄漏源头",
+  source: "被泄漏途径",
 };
 
 // 验证规则常量
