@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '个人信息泄露检测工具',
-    description: '快速检测个人信息是否泄露',
+    description: '检测你的手机号、身份证、邮箱等是否出现在泄露数据库中，快速识别隐私风险。',
   },
 
   robots: {

@@ -97,20 +97,46 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       try {
         const response = await searchAction(formData);
 
+        // 1. 业务校验错误（比如参数不合法）
         if (response.status === 422) {
           showInvalidState(normalizedQuery);
-        } else if (response.error) {
-          setErrorMessage(response.error);
-        } else if (response.result) {
-          setResult(response.result);
-        } else {
-          setErrorMessage("查询无结果");
+          return;
         }
-      } catch {
-        setErrorMessage("查询失败，请稍候再试。");
+
+        // 2. 服务器返回错误（有 response，但失败）s
+        if (response.status && response.status >= 500) {
+          setErrorMessage("🛠️ 服务器异常，请稍候再试。");
+          return;
+        }
+
+        // 3. 其他业务错误（后端返回 error 字段）
+        if (response.error) {
+          setErrorMessage(`🚧 ${response.error}`);
+          return;
+        }
+
+        // 4. 成功
+        if (response.result) {
+          setResult(response.result);
+          return;
+        }
+
+        // 5. 未知情况兜底
+        setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
+      } catch (err: any) {
+
+        // 6. 网络错误（断网 / DNS / 超时 / 请求未发出成功响应）
+        if (!err?.response) {
+          setErrorMessage("🌐 网络异常，请检查你的网络连接。");
+          return;
+        }
+
+        // 7. 其他未知异常
+        setErrorMessage("⚠️ 请求失败，请稍候再试。");
       }
     });
   };
+
 
   const syncInputValue = (value: string) => {
     setInputValue(value);
@@ -212,93 +238,104 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
             onTouchStart={() => { }}
             onTouchEnd={() => { }}
           >
-            {isPending ? "查询中 ···" : "查询"}
+            {isPending ? "查询中" : "查询"}
           </button>
         </div>
       </form>
 
       <div className="w-full pb-8 mt-6">
         {errorMessage && (
-          <div className="w-full max-w-[43em] mx-auto rounded-3xl border border-[#fecaca] bg-[#fff1f2] px-5 py-4 text-[#b42318] text-sm shadow-[0_10px_24px_rgba(190,24,93,0.08)]">
-            {errorMessage}
+          <div className="w-full max-w-[43em] mx-auto">
+            {/* 第一个特殊字段：SVG */}
+            <div className="flex flex-col items-center space-y-2 mb-6">
+              <QueryTypeDisplay query={normalizedQuery} />
+              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                {normalizedQuery}
+              </div>
+
+              <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
+                <span>{errorMessage}</span>
+              </div>
+
+            </div>
           </div>
         )}
 
         {userIsEditing && inputValue ? (
           <div className="w-full max-w-[43em] mx-auto">
-              <div className="flex flex-col items-center space-y-2 mb-6">
-                <QueryTypeDisplay query={normalizedQuery} />
-                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                  {normalizedQuery}
-                </div>
+            <div className="flex flex-col items-center space-y-2 mb-6">
+              <QueryTypeDisplay query={normalizedQuery} />
+              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                {normalizedQuery}
               </div>
+            </div>
           </div>
         ) : is422Error && inputValue ? (
           <div className="w-full max-w-[43em] mx-auto">
-              {/* 第一个特殊字段：SVG */}
-              <div className="flex flex-col items-center space-y-2 mb-6">
-                <QueryTypeDisplay query={normalizedQuery} />
-                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                  {normalizedQuery}
-                </div>
-
-                <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
-                  <span>⛔️ 需要输入 身份证 或 手机号 或 邮箱 或 QQ 号</span>
-                </div>
-
+            {/* 第一个特殊字段：SVG */}
+            <div className="flex flex-col items-center space-y-2 mb-6">
+              <QueryTypeDisplay query={normalizedQuery} />
+              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                {normalizedQuery}
               </div>
+
+              <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
+                <span>⛔️ 需要输入 身份证 或 手机号 或 邮箱 或 QQ 号</span>
+              </div>
+
+            </div>
           </div>
         ) : Object.keys(result).length === 0 && !isPending ? null : filteredFields.length === 0 && !isPending ? (
           <div className="w-full max-w-[43em] mx-auto">
-              {/* 第一个特殊字段：SVG */}
-              <div className="flex flex-col items-center space-y-2 mb-6">
-                <QueryTypeDisplay query={normalizedQuery} />
-                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                  {normalizedQuery}
-                </div>
-                <div className="bg-green-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
-                  <span>🔒 安全: 未检测到个人信息 “泄漏”</span>
-                </div>
-
+            {/* 第一个特殊字段：SVG */}
+            <div className="flex flex-col items-center space-y-2 mb-6">
+              <QueryTypeDisplay query={normalizedQuery} />
+              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                {normalizedQuery}
               </div>
+              <div className="bg-green-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
+                <span>🔒 安全: 未检测到个人信息 “泄漏”</span>
+              </div>
+
+            </div>
           </div>
         ) : (
           <div className="w-full max-w-[43em] mx-auto px-2">
-              {/* 第一个特殊字段：SVG */}
-              <div className="flex flex-col items-center space-y-2 mb-6">
-                <QueryTypeDisplay query={normalizedQuery} />
-                <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                  {normalizedQuery}
-                </div>
+            {/* 第一个特殊字段：SVG */}
+            <div className="flex flex-col items-center space-y-2 mb-6">
+              <QueryTypeDisplay query={normalizedQuery} />
+              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+                {normalizedQuery}
+              </div>
 
-              </div>
-              <div className="mt-6">
-                <div className="space-y-px">
-                  {filteredFields.map((field, idx) => {
-                    const items = result[field] ?? [];
-                    const isLastRow = idx === filteredFields.length - 1;
-                    return (
-                      <div key={idx} className={`flex w-full ${!isLastRow ? 'border-b border-[#e2e8f0]' : ''}`}>
-                        {/* 第一列：字段名 - 右对齐 */}
-                        <div className="w-1/2 font-normal text-[0.75rem] px-4 py-3 result-name-color flex items-center justify-end border-r border-[#e2e8f0] min-w-0">
-                          {fieldNameMap[field] || field}
-                        </div>
-                        {/* 第二列：字段值 - 左对齐 */}
-                        <div className="w-1/2 flex flex-col gap-2 px-4 py-3 justify-start min-w-0">
-                          {items.map((item: string | number, i: number) => (
-                            <div
-                              key={i}
-                              className="font-bold break-all text-[0.75rem] result-text-color"
-                            >
-                              {item}
-                            </div>
-                          ))}
-                        </div>
+            </div>
+            <div className="mt-6">
+              <div className="space-y-px">
+                {filteredFields.map((field, idx) => {
+                  const items = result[field] ?? [];
+                  const isLastRow = idx === filteredFields.length - 1;
+                  return (
+                    <div key={idx} className={`flex w-full ${!isLastRow ? 'border-b border-[#e2e8f0]' : ''}`}>
+                      {/* 第一列：字段名 - 右对齐 */}
+                      <div className="w-1/2 font-normal text-[0.75rem] px-4 py-3 result-name-color flex items-center justify-end border-r border-[#e2e8f0] min-w-0">
+                        {fieldNameMap[field] || field}
                       </div>
-                    );
-                  })}
-                </div>
+                      {/* 第二列：字段值 - 左对齐 */}
+                      <div className="w-1/2 flex flex-col gap-2 px-4 py-3 justify-start min-w-0">
+                        {items.map((item: string | number, i: number) => (
+                          <div
+                            key={i}
+                            className="font-bold break-all text-[0.75rem] result-text-color"
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </div>
           </div>
         )}
       </div>
