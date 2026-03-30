@@ -88,38 +88,32 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
     startTransition(async () => {
       try {
-        // 混淆查询数据
         const obfuscatedQuery = await obfuscateData(normalizedQuery);
         const formData = new FormData();
         formData.set("q_obfuscated", obfuscatedQuery);
 
         const response = await searchAction(formData);
 
-        // 1. 业务校验错误（比如参数不合法）
         if (response.status === 422) {
           showInvalidState();
           return;
         }
 
-        // 2. 服务器返回错误（有 response，但失败）s
         if (response.status && response.status >= 500) {
           setErrorMessage("🛠️ 服务器异常，请稍候再试。");
           return;
         }
 
-        // 3. 其他业务错误（后端返回 error 字段）
         if (response.error) {
           setErrorMessage(`🚧 ${response.error}`);
           return;
         }
 
-        // 4. 成功
         if (response.result) {
           setResult(response.result);
           return;
         }
 
-        // 5. 未知情况兜底
         setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
       } catch (err: unknown) {
         const hasResponse =
@@ -127,13 +121,11 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           err !== null &&
           "response" in err;
 
-        // 6. 网络错误（断网 / DNS / 超时 / 请求未发出成功响应）
         if (!hasResponse) {
           setErrorMessage("🌐 网络异常，请检查你的网络连接。");
           return;
         }
 
-        // 7. 其他未知异常
         setErrorMessage("⚠️ 请求失败，请稍候再试。");
       }
     });

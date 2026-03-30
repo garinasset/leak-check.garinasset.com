@@ -30,10 +30,6 @@ async function searchPerson(formData: FormData) {
   }
 
   const query = normalizeQuery(queryRaw);
-
-  // =========================
-  // ⭐ 获取真实用户 IP
-  // =========================
   const headerList = await headers();
 
   const realIP =

@@ -1,3 +1,5 @@
+import { API_COUNT_URL, API_DIG_URL } from "./config";
+
 export const FIELDS = [
   "id", "name", "receiver", "nickname", "phone", "address",
   "car", "email", "qq", "weibo", "contact", "company", "source"
@@ -18,9 +20,6 @@ export const fieldNameMap: Record<string, string> = {
   company: "单位",
   source: "泄漏链条",
 };
-
-// 导入统一的配置
-import { PERSON_BACKEND_URL, PERSON_COUNT_URL } from "./config";
 
 // 验证规则常量
 const VALIDATION_PATTERNS = {
@@ -69,11 +68,10 @@ export function formatRecordCount(raw: string): string {
 }
 
 export async function getPersonRecordCount(realIP?: string): Promise<string | null> {
-  const response = await fetch(PERSON_COUNT_URL, {
+  const response = await fetch(API_COUNT_URL, {
     method: "GET",
     headers: {
       accept: "text/plain",
-      // ⭐关键：透传真实 IP
       "X-Real-IP": realIP ?? "",
       "X-Forwarded-For": realIP ?? ""
     },
@@ -97,12 +95,10 @@ export async function getPersonData(
   const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
-  const response = await fetch(PERSON_BACKEND_URL, {
+  const response = await fetch(API_DIG_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-
-      // ⭐关键：透传真实 IP
       "X-Real-IP": realIP ?? "",
       "X-Forwarded-For": realIP ?? ""
     },
