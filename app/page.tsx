@@ -48,6 +48,9 @@ async function searchPerson(formData: FormData) {
     if (errorMessage.includes("422")) {
       return { status: 422 };
     }
+    if (errorMessage.includes("429")) {
+      return { status: 429 };
+    }
 
     return { error: errorMessage };
   }
@@ -85,7 +88,7 @@ export default async function HomePage() {
         </div>
         <div >
           <a href="https://www.garinasset.com">
-          <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
+            <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
           </a>
         </div>
       </Footer>
