@@ -6,6 +6,8 @@
   --link-color: rgb(0, 0, 153);
   --result-name-color: #94a3b8;
   --result-text-color: rgb(0, 0, 153);
+  --border-color: #e2e8f0;
+
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -16,12 +18,19 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0f172a;
-    /* slate-900 */
     --foreground: #e5e7eb;
-    /* gray-200 */
-    --link-color: #fbbf24;
+
+    /* 🔥 更柔和的蓝色（替代刺眼黄） */
+    --link-color: #60a5fa;
+
+    /* 保持不动 */
     --result-name-color: #94a3b8;
-    --result-text-color: #fbbf24;
+
+    /* 🔥 结果文字：稍微亮一点但不刺眼 */
+    --result-text-color: #93c5fd;
+
+    /* 🔥 边框：降低亮度（现在太亮了） */
+    --border-color: #334155;
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -61,4 +70,8 @@ a:hover {
 
 .result-name-color {
   color: var(--result-name-color);
+}
+
+.border-color {
+  border-color: var(--border-color);
 }

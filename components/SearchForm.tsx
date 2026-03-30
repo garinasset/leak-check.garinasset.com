@@ -309,9 +309,9 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
                   const items = result[field] ?? [];
                   const isLastRow = idx === filteredFields.length - 1;
                   return (
-                    <div key={idx} className={`flex w-full ${!isLastRow ? 'border-b border-[#e2e8f0]' : ''}`}>
+                    <div key={idx} className={`flex w-full border-color ${!isLastRow ? 'border-b ' : ''}`}>
                       {/* 第一列：字段名 - 右对齐 */}
-                      <div className="w-1/2 font-normal text-[0.75rem] px-4 py-3 result-name-color flex items-center justify-end border-r border-[#e2e8f0] min-w-0">
+                      <div className="w-1/2 font-normal text-[0.75rem] px-4 py-3 result-name-color flex items-center justify-end border-r border-color min-w-0">
                         {fieldNameMap[field] || field}
                       </div>
                       {/* 第二列：字段值 - 左对齐 */}

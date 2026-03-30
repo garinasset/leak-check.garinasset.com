@@ -4,6 +4,6 @@ export const NEXT_PUBLIC_OBFUSCATION_KEY =
 
 // API 接口地址
 export const API_COUNT_URL =
-    process.env.API_COUNT_URL ?? "localhost:8000/leak-check/";
+    process.env.API_COUNT_URL ?? "http://localhost:8000/leak-check/";
 export const API_DIG_URL =
-    process.env.API_DIG_URL ?? "localhost:8000/leak-check/dig/masking";
+    process.env.API_DIG_URL ?? "http://localhost:8000/leak-check/dig/masking";
