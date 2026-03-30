@@ -195,7 +195,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         </div>
 
         <div className="w-full max-w-[43em] mx-auto px-2">
-          <div ref={searchBoxRef} className={`flex items-center min-h-[3.375em] rounded-[1.75em] border border-[#d5d9e2] bg-white px-4 shadow-[0_14px_40px_rgba(15,23,42,0.08)] ${is422Error ? "shake border-[#e67b55]" : ""}`}>
+          <div ref={searchBoxRef} className={`flex items-center min-h-[3.375em] rounded-[1.75em] border border-[#d5d9e2] bg-background px-4 shadow-[0_14px_40px_rgba(15,23,42,0.08)] ${is422Error ? "shake border-[#e67b55]" : ""}`}>
             <svg
               className="text-[#64748b] w-5 h-5 flex-shrink-0"
               viewBox="0 0 24 24"
@@ -208,7 +208,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               name="q"
               value={inputValue}
               onChange={(e) => syncInputValue(e.currentTarget.value)}
-              className="flex-1 bg-transparent border-none outline-none text-[#0f172a] placeholder-[#94a3b8] text-base px-3"
+              className="flex-1 bg-transparent border-none outline-none text-[var(--foreground)] placeholder-[#94a3b8] text-base px-3"
               placeholder={DEFAULT_PLACEHOLDER}
               autoComplete="off"
               data-form-type="other"
