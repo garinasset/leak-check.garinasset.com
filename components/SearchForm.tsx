@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import { FIELDS, fieldNameMap, isValidPersonQuery, normalizeQuery } from "../lib/person";
+import { encryptData } from "../lib/crypto";
 import QueryTypeDisplay from "./QueryTypeDisplay";
 
 interface SearchFormProps {
@@ -87,14 +88,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       return;
     }
 
-    const formData = new FormData();
-    formData.set("q", normalizedQuery);
-
     clearQueryState();
     setUserIsEditing(false);
 
     startTransition(async () => {
       try {
+        // 加密查询数据
+        const encryptedQuery = await encryptData(normalizedQuery);
+        const formData = new FormData();
+        formData.set("q_encrypted", encryptedQuery);
+
         const response = await searchAction(formData);
 
         // 1. 业务校验错误（比如参数不合法）

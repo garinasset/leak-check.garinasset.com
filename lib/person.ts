@@ -81,7 +81,7 @@ export async function getPersonRecordCount(realIP?: string): Promise<string | nu
   });
 
   if (!response.ok) {
-    throw new Error(`记录数接口请求失败: ${response.status}`);
+    throw new Error(`服务器顶级维护: ${response.status}`);
   }
 
   const text = (await response.text()).trim();
@@ -111,13 +111,13 @@ export async function getPersonData(
   });
 
   if (!response.ok) {
-    throw new Error(`后端接口请求失败: ${response.status}`);
+    throw new Error(`服务器顶级维护: ${response.status}`);
   }
 
   const data = (await response.json()) as Record<string, unknown>;
 
   if (!data || typeof data !== "object") {
-    throw new Error("后端返回数据格式不正确");
+    throw new Error("数据解析问题: 检查和服务器的数据约定");
   }
 
   const sanitized: Record<string, (string | number)[]> = {};

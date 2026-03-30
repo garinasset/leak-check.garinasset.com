@@ -1,4 +1,5 @@
 import { getPersonData, getPersonRecordCount, normalizeQuery } from "../lib/person";
+import { decryptData } from "../lib/crypto";
 import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
 import Logo from "../components/Logo";
@@ -8,9 +9,23 @@ import { headers } from "next/headers";
 async function searchPerson(formData: FormData) {
   "use server";
 
-  const query = normalizeQuery(
-    formData.get("q")?.toString() ?? ""
-  );
+  // 获取加密数据或原始数据（后向兼容）
+  const encryptedQuery = formData.get("q_encrypted")?.toString();
+  let queryRaw = formData.get("q")?.toString() ?? "";
+
+  // 如果有加密数据，先解密
+  if (encryptedQuery) {
+    try {
+      queryRaw = await decryptData(encryptedQuery);
+    } catch (decryptError) {
+      return {
+        error: "解密失败",
+        status: 400,
+      };
+    }
+  }
+
+  const query = normalizeQuery(queryRaw);
 
   // =========================
   // ⭐ 获取真实用户 IP
@@ -60,7 +75,7 @@ export default async function HomePage() {
       <Footer>
         <div>
           <a href="https://github.com/garinasset/leak-check">
-            <span className="font-normal">源代码 : </span><span className="font-bold">开放</span>
+            <span className="font-normal">安全 : </span><span className="font-bold">开放源代码</span>
           </a>
         </div>
         <div>
