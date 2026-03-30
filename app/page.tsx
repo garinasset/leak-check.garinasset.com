@@ -1,5 +1,5 @@
 import { getPersonData, getPersonRecordCount, normalizeQuery } from "../lib/person";
-import { decryptData } from "../lib/crypto";
+import { restoreData } from "../lib/crypto";
 import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
 import Logo from "../components/Logo";
@@ -9,20 +9,24 @@ import { headers } from "next/headers";
 async function searchPerson(formData: FormData) {
   "use server";
 
-  // 获取加密数据或原始数据（后向兼容）
-  const encryptedQuery = formData.get("q_encrypted")?.toString();
-  let queryRaw = formData.get("q")?.toString() ?? "";
+  const obfuscatedQuery = formData.get("q_obfuscated")?.toString();
 
-  // 如果有加密数据，先解密
-  if (encryptedQuery) {
-    try {
-      queryRaw = await decryptData(encryptedQuery);
-    } catch (decryptError) {
-      return {
-        error: "解密失败",
-        status: 400,
-      };
-    }
+  if (!obfuscatedQuery) {
+    return {
+      error: "缺少混淆查询参数",
+      status: 400,
+    };
+  }
+
+  let queryRaw = "";
+
+  try {
+    queryRaw = await restoreData(obfuscatedQuery);
+  } catch {
+    return {
+      error: "还原失败",
+      status: 400,
+    };
   }
 
   const query = normalizeQuery(queryRaw);

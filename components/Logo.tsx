@@ -5,24 +5,26 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Logo() {
-  const [isDark, setIsDark] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isDark, setIsDark] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+      : false
+  );
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 768px)").matches
+      : false
+  );
 
   useEffect(() => {
-    // 检测暗色模式
     const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDark(darkModeQuery.matches);
-
     const handleDarkModeChange = (e: MediaQueryListEvent) => {
       setIsDark(e.matches);
     };
 
     darkModeQuery.addEventListener("change", handleDarkModeChange);
 
-    // 检测移动设备
     const mobileQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mobileQuery.matches);
-
     const handleMobileChange = (e: MediaQueryListEvent) => {
       setIsMobile(e.matches);
     };

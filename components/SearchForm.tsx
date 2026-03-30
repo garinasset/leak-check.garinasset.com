@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import { FIELDS, fieldNameMap, isValidPersonQuery, normalizeQuery } from "../lib/person";
-import { encryptData } from "../lib/crypto";
+import { obfuscateData } from "../lib/crypto";
 import QueryTypeDisplay from "./QueryTypeDisplay";
 
 interface SearchFormProps {
@@ -18,7 +18,6 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   const [result, setResult] = useState<Record<string, (string | number)[]>>({});
   const [errorMessage, setErrorMessage] = useState("");
   const [is422Error, setIs422Error] = useState(false);
-  const [invalidQuery, setInvalidQuery] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
   const [userIsEditing, setUserIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -30,21 +29,11 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   const clearQueryState = () => {
     setErrorMessage("");
     setIs422Error(false);
-    setInvalidQuery("");
     setResult({});
   };
 
-  const resetFormState = () => {
-    formRef.current?.reset();
-    setInputValue("");
-    clearQueryState();
-    setUserIsEditing(false);
-    searchBoxRef.current?.classList.remove("shake");
-  };
-
-  const showInvalidState = (query: string) => {
+  const showInvalidState = () => {
     setIs422Error(true);
-    setInvalidQuery(query);
     setErrorMessage("");
     setResult({});
     setUserIsEditing(false);
@@ -59,8 +48,14 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
   useEffect(() => {
     const initForm = () => {
-      resetFormState();
+      formRef.current?.reset();
+      setInputValue("");
+      setErrorMessage("");
+      setIs422Error(false);
+      setResult({});
       setHasHydrated(true);
+      setUserIsEditing(false);
+      searchBoxRef.current?.classList.remove("shake");
     };
 
     const handlePageShow = (event: PageTransitionEvent) => {
@@ -84,7 +79,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
     if (!normalizedQuery) return;
 
     if (!isValidPersonQuery(normalizedQuery)) {
-      showInvalidState(normalizedQuery);
+      showInvalidState();
       return;
     }
 
@@ -93,16 +88,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
     startTransition(async () => {
       try {
-        // 加密查询数据
-        const encryptedQuery = await encryptData(normalizedQuery);
+        // 混淆查询数据
+        const obfuscatedQuery = await obfuscateData(normalizedQuery);
         const formData = new FormData();
-        formData.set("q_encrypted", encryptedQuery);
+        formData.set("q_obfuscated", obfuscatedQuery);
 
         const response = await searchAction(formData);
 
         // 1. 业务校验错误（比如参数不合法）
         if (response.status === 422) {
-          showInvalidState(normalizedQuery);
+          showInvalidState();
           return;
         }
 
@@ -126,10 +121,14 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         // 5. 未知情况兜底
         setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const hasResponse =
+          typeof err === "object" &&
+          err !== null &&
+          "response" in err;
 
         // 6. 网络错误（断网 / DNS / 超时 / 请求未发出成功响应）
-        if (!err?.response) {
+        if (!hasResponse) {
           setErrorMessage("🌐 网络异常，请检查你的网络连接。");
           return;
         }

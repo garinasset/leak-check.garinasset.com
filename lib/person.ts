@@ -19,6 +19,9 @@ export const fieldNameMap: Record<string, string> = {
   source: "泄漏链条",
 };
 
+// 导入统一的配置
+import { PERSON_BACKEND_URL, PERSON_COUNT_URL } from "./config";
+
 // 验证规则常量
 const VALIDATION_PATTERNS = {
   idCard: /^(?:\d{15}|\d{17}[\dXx])$/,
@@ -26,9 +29,6 @@ const VALIDATION_PATTERNS = {
   email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
   qq: /^[1-9]\d{4,10}$/,
 } as const;
-
-const BACKEND_URL = process.env.PERSON_BACKEND_URL ?? "http://172.16.1.4/leak-check/dig/masking";
-const PERSON_COUNT_URL = process.env.PERSON_COUNT_URL ?? "http://172.16.1.4/leak-check/";
 
 export function normalizeQuery(raw: string): string {
   return raw
@@ -97,7 +97,7 @@ export async function getPersonData(
   const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
-  const response = await fetch(BACKEND_URL, {
+  const response = await fetch(PERSON_BACKEND_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
