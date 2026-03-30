@@ -99,6 +99,11 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           return;
         }
 
+        if (response.status === 429) {
+          setErrorMessage("⚠️ 频繁请求, 速率降级.");
+          return;
+        }
+
         if (response.status && response.status >= 500) {
           setErrorMessage("🛠️ 服务器异常，请稍候再试。");
           return;
@@ -121,12 +126,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           err !== null &&
           "response" in err;
 
-        if (!hasResponse) {
-          setErrorMessage("🌐 网络异常，请检查你的网络连接。");
-          return;
-        }
-
-        setErrorMessage("⚠️ 请求失败，请稍候再试。");
+        setErrorMessage("🌐 网络异常，请检查你的网络连接。");
       }
     });
   };
