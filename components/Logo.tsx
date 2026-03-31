@@ -6,7 +6,6 @@ import Link from "next/link";
 export default function Logo() {
   return (
     <Link href="/" className="group inline-flex items-center">
-
       <div className="relative w-[128px] h-[128px]">
 
         {/* 🌞 浅色 */}
@@ -17,10 +16,13 @@ export default function Logo() {
           height={128}
           priority
           className="
-            object-contain
-            transition-opacity duration-300
-            opacity-100 dark:opacity-0
-          "
+        absolute inset-0
+        object-contain
+        transition-all duration-300
+        group-hover:scale-105
+        group-hover:opacity-90
+        opacity-100 dark:opacity-0
+      "
         />
 
         {/* 🌙 深色 */}
@@ -31,11 +33,13 @@ export default function Logo() {
           height={128}
           priority
           className="
-            absolute inset-0
-            object-contain
-            transition-opacity duration-300
-            opacity-0 dark:opacity-100
-          "
+        absolute inset-0
+        object-contain
+        transition-all duration-300
+        group-hover:scale-105
+        group-hover:opacity-90
+        opacity-0 dark:opacity-100
+      "
         />
 
       </div>

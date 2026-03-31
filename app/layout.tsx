@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    default: '个人信息 “泄露” 检测 - 嘉林数据',
+    default: '个人信息泄露检测 - 嘉林数据',
     template: '%s | 信息安全检测',
   },
 

@@ -126,7 +126,9 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           err !== null &&
           "response" in err;
 
-        setErrorMessage("🌐 网络异常，请检查你的网络连接。");
+        setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
+
+        // setErrorMessage("🌐 网络异常，请检查你的网络连接。");
       }
     });
   };
