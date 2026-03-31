@@ -6,40 +6,38 @@ import Link from "next/link";
 export default function Logo() {
   return (
     <Link href="/" className="group inline-flex items-center">
-      <div className="relative w-[128px] h-[128px]">
+      <div className="relative w-[128px] h-[128px] overflow-visible">
 
         {/* 🌞 浅色 */}
         <Image
           src="/logo.png"
           alt="logo"
-          width={128}
-          height={128}
+          sizes="128px"
+          fill
           priority
           className="
-        absolute inset-0
-        object-contain
-        transition-all duration-300
-        group-hover:scale-105
-        group-hover:opacity-90
-        opacity-100 dark:opacity-0
-      "
+            object-contain
+            transition-transform duration-300
+            group-hover:scale-105
+            opacity-100 dark:opacity-0
+            will-change-transform
+          "
         />
 
         {/* 🌙 深色 */}
         <Image
           src="/logo-dark.png"
           alt="logo"
-          width={128}
-          height={128}
+          sizes="128px"
+          fill
           priority
           className="
-        absolute inset-0
-        object-contain
-        transition-all duration-300
-        group-hover:scale-105
-        group-hover:opacity-90
-        opacity-0 dark:opacity-100
-      "
+            object-contain
+            transition-transform duration-300
+            group-hover:scale-105
+            opacity-0 dark:opacity-100
+            will-change-transform
+          "
         />
 
       </div>
