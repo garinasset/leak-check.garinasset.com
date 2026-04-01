@@ -84,7 +84,7 @@ export default async function HomePage() {
           </a>
         </div>
         <div >
-          <a href="https://www.garinasset.com">
+          <a href="https://api.garinasset.com">
           <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
           </a>
         </div>
