@@ -11,7 +11,7 @@ export default function QueryTypeDisplay({ query }: QueryTypeDisplayProps) {
     let content: React.ReactNode = null;
 
     // 身份证
-    if (/^(?:\d{15}|\d{17}[\dXx])$/.test(normalized)) {
+    if (/^\d{17}[\dXx]$/.test(normalized)) {
         content = "🪪";
     }
     // 手机号

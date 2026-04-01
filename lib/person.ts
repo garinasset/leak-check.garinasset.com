@@ -23,7 +23,7 @@ export const fieldNameMap: Record<string, string> = {
 
 // 验证规则常量
 const VALIDATION_PATTERNS = {
-  idCard: /^(?:\d{15}|\d{17}[\dXx])$/,
+  idCard: /^\d{17}[\dXx]$/,
   phone: /^1[3-9]\d{9}$/,
   email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
   qq: /^[1-9]\d{4,10}$/,
