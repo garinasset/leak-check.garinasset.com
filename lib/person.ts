@@ -23,10 +23,17 @@ export const fieldNameMap: Record<string, string> = {
 
 // 验证规则常量
 const VALIDATION_PATTERNS = {
-  idCard: /^\d{17}[\dXx]$/,
-  phone: /^1[3-9]\d{9}$/,
+  // 身份证（大陆 + 台湾）
+  idCard: /^(?:\d{17}[\dXx]|[A-Z][12]\d{8})$/,
+
+  // 手机号（中国大陆 + 国际E.164）
+  phone: /^(?:1[3-9]\d{9}|\+\d{6,15})$/,
+
+  // 邮箱
   email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
-  qq: /^[1-9]\d{4,10}$/,
+
+  // QQ（排除手机号）
+  qq: /^(?!1[3-9]\d{9}$)[1-9]\d{4,10}$/,
 } as const;
 
 export function normalizeQuery(raw: string): string {

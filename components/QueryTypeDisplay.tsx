@@ -10,22 +10,31 @@ export default function QueryTypeDisplay({ query }: QueryTypeDisplayProps) {
 
     let content: React.ReactNode = null;
 
-    // 身份证
-    if (/^\d{17}[\dXx]$/.test(normalized)) {
+    // 身份证（大陆 + 台湾）
+    if (
+        /^\d{17}[\dXx]$/.test(normalized) ||   // 中国大陆
+        /^[A-Z][12]\d{8}$/.test(normalized)    // 台湾身份证
+    ) {
         content = "🪪";
     }
-    // 手机号
-    else if (/^1[3-9]\d{9}$/.test(normalized)) {
+
+    // 手机号（国内 11位 + 国际）
+    else if (
+        /^1[3-9]\d{9}$/.test(normalized) ||     // 中国大陆（11位）
+        /^\+\d{6,15}$/.test(normalized)        // 国际手机号
+    ) {
         content = "📞";
     }
+
     // 邮箱
     else if (/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(normalized)) {
         content = "✉️";
     }
-    // QQ
+
+    // QQ（已修复 + 排除手机号 + 更严格）
     else if (
-        /^[1-9]\d{4,10}$/.test(normalized) &&
-        !(normalized.length === 11 && normalized.startsWith("1"))
+        /^[1-9]\d{4,10}$/.test(normalized) &&   // 5-11位数字
+        !/^1[3-9]\d{9}$/.test(normalized)       // 排除手机号（核心修复）
     ) {
         content = (
             <Image
