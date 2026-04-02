@@ -10,7 +10,7 @@ interface SearchFormProps {
   recordCount?: string | null;
 }
 
-const DEFAULT_PLACEHOLDER = "输入 身份证 或 手机号 或 邮箱 或 QQ 号";
+const DEFAULT_PLACEHOLDER = "输入 身份证 或 电话 或 邮箱 或 QQ 号";
 const SHAKE_DURATION = 1000;
 
 export default function SearchForm({ searchAction, recordCount }: SearchFormProps) {
@@ -210,7 +210,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               name="q"
               value={inputValue}
               onChange={(e) => syncInputValue(e.currentTarget.value)}
-              className="flex-1 bg-transparent border-none outline-none text-[var(--foreground)] placeholder-[#94a3b8] text-base px-3"
+              className="flex-1 bg-transparent border-none outline-none text-[var(--foreground)] placeholder-[#94a3b8] text-base px-2"
               placeholder={DEFAULT_PLACEHOLDER}
               autoComplete="off"
               data-form-type="other"
@@ -276,7 +276,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               </div>
 
               <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
-                <span>⛔️ 需要输入 身份证 或 手机号 或 邮箱 或 QQ 号</span>
+                <span>⛔️ 需要输入 身份证 或 电话 或 邮箱 或 QQ 号</span>
               </div>
 
             </div>

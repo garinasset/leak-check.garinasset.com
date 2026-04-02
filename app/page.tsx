@@ -67,10 +67,10 @@ export default async function HomePage() {
     <div className="min-h-screen flex flex-col font-mono">
       <div className="flex flex-col items-center mt-6 mb-4">
         <Logo />
-
       </div>
 
-      <SearchForm searchAction={searchPerson} recordCount={recordCount} />
+      <div className="px-2"><SearchForm searchAction={searchPerson} recordCount={recordCount} /></div>
+
 
       <Footer>
         <div>
@@ -85,7 +85,7 @@ export default async function HomePage() {
         </div>
         <div >
           <a href="https://api.garinasset.com">
-          <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
+            <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
           </a>
         </div>
       </Footer>

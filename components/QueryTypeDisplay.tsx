@@ -18,10 +18,10 @@ export default function QueryTypeDisplay({ query }: QueryTypeDisplayProps) {
         content = "🪪";
     }
 
-    // 手机号（国内 11位 + 国际）
+    // 电话（国内 11位 + 国际）
     else if (
         /^1[3-9]\d{9}$/.test(normalized) ||     // 中国大陆（11位）
-        /^\+\d{6,15}$/.test(normalized)        // 国际手机号
+        /^\+\d{6,15}$/.test(normalized)        // 国际电话
     ) {
         content = "📞";
     }
@@ -31,10 +31,10 @@ export default function QueryTypeDisplay({ query }: QueryTypeDisplayProps) {
         content = "✉️";
     }
 
-    // QQ（已修复 + 排除手机号 + 更严格）
+    // QQ（已修复 + 排除电话 + 更严格）
     else if (
         /^[1-9]\d{4,10}$/.test(normalized) &&   // 5-11位数字
-        !/^1[3-9]\d{9}$/.test(normalized)       // 排除手机号（核心修复）
+        !/^1[3-9]\d{9}$/.test(normalized)       // 排除电话（核心修复）
     ) {
         content = (
             <Image
