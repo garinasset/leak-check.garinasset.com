@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     '身份证查询',
     '隐私安全',
     '信息安全工具',
-    '黑产数据检测',
   ],
 
   authors: [{ name: '嘉林资产' }],
