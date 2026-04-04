@@ -11,6 +11,7 @@ interface SearchFormProps {
 }
 
 const DEFAULT_PLACEHOLDER = "输入 身份证 或 电话 或 邮箱 或 QQ 号";
+const DEFAULT_RESULT_MESSAGE = "你有权了解你的数据处于何种状态。";
 const SHAKE_DURATION = 1000;
 
 export default function SearchForm({ searchAction, recordCount }: SearchFormProps) {
@@ -119,13 +120,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           return;
         }
 
-        setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
-      } catch (err: unknown) {
-        const hasResponse =
-          typeof err === "object" &&
-          err !== null &&
-          "response" in err;
-
+      } catch {
         setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
 
         // setErrorMessage("🌐 网络异常，请检查你的网络连接。");
@@ -146,7 +141,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   );
 
   return (
-    <>
+    <div className="flex h-full w-full flex-col">
       <style>{`
         .shake {
             animation: shake 0.35s ease;
@@ -239,7 +234,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         </div>
       </form>
 
-      <div className="w-full pb-8 mt-6">
+      <div className="mt-6 flex flex-col flex-1 w-full">
         {errorMessage && (
           <div className="w-full max-w-[43em] mx-auto">
             {/* 第一个特殊字段：SVG */}
@@ -281,7 +276,13 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
             </div>
           </div>
-        ) : Object.keys(result).length === 0 && !isPending ? null : filteredFields.length === 0 && !isPending ? (
+        ) : Object.keys(result).length === 0 && !isPending ? (
+          <div className="w-full max-w-[43em] mx-auto mt-auto">
+            <p className="text-xs result-text-color font-bold text-center">
+              {DEFAULT_RESULT_MESSAGE}
+            </p>
+          </div>
+        ) : filteredFields.length === 0 && !isPending ? (
           <div className="w-full max-w-[43em] mx-auto">
             {/* 第一个特殊字段：SVG */}
             <div className="flex flex-col items-center space-y-2 mb-6">
@@ -335,6 +336,6 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

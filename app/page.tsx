@@ -69,7 +69,9 @@ export default async function HomePage() {
         <Logo />
       </div>
 
-      <div className="px-2"><SearchForm searchAction={searchPerson} recordCount={recordCount} /></div>
+      <div className="flex flex-1 px-2">
+        <SearchForm searchAction={searchPerson} recordCount={recordCount} />
+      </div>
 
 
       <Footer>
