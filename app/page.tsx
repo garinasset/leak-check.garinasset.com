@@ -74,7 +74,8 @@ export default async function HomePage() {
 
       <Footer>
         <div>
-          <a href="https://github.com/garinasset/leak-check">
+          <a href="https://github.com/garinasset/leak-check" target="_blank"
+            rel="noopener">
             <span className="font-normal">安全 : </span><span className="font-bold">开放源代码</span>
           </a>
         </div>
@@ -84,7 +85,8 @@ export default async function HomePage() {
           </a>
         </div>
         <div >
-          <a href="https://api.garinasset.com">
+          <a href="https://api.garinasset.com" target="_blank"
+            rel="noopener">
             <span className="font-normal">应用 & 接口 : </span><span className="font-bold">嘉林数据</span>
           </a>
         </div>
