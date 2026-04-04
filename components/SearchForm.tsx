@@ -141,7 +141,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   );
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex min-h-0 w-full flex-1 self-stretch flex-col">
       <style>{`
         .shake {
             animation: shake 0.35s ease;
@@ -234,7 +234,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         </div>
       </form>
 
-      <div className="mt-6 flex flex-col flex-1 w-full">
+      <div className="mt-6 flex min-h-0 w-full flex-1 flex-col">
         {errorMessage && (
           <div className="w-full max-w-[43em] mx-auto">
             {/* 第一个特殊字段：SVG */}
@@ -278,7 +278,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           </div>
         ) : Object.keys(result).length === 0 && !isPending ? (
           <div className="w-full max-w-[43em] mx-auto mt-auto">
-            <p className="text-xs result-text-color font-bold text-center">
+            <p className="text-xs result-text-color font-light text-center">
               {DEFAULT_RESULT_MESSAGE}
             </p>
           </div>
