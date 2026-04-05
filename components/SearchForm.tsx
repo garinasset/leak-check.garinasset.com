@@ -211,7 +211,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "HIJACK_SUSPECTED") {
           setErrorMessage(
-            "🌐 识别到 DNS 异常: 您的 DNS 可能被 运营商 做了劫持, 请检查 DNS."
+            "🌐 识别到 DNS 异常: 您的 DNS 可能被 运营商 劫持, 请检查."
           );
           return;
         }
