@@ -21,7 +21,7 @@ export const fieldNameMap: Record<string, string> = {
   source: "泄漏链条",
 };
 
-const PERSON_QUERY_TIMEOUT_MS = 4000;
+const PERSON_QUERY_TIMEOUT_MS = 8000;
 const PERSON_QUERY_TIMEOUT_ERROR = "PERSON_QUERY_TIMEOUT";
 
 // 验证规则常量

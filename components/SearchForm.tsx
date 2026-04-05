@@ -91,7 +91,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       // =========================
       // ⏱️ 通用：带超时 fetch
       // =========================
-      const fetchWithTimeout = async (url: string | URL | Request, options = {}, timeout = 4000) => {
+      const fetchWithTimeout = async (url: string | URL | Request, options = {}, timeout = 8000) => {
         const controller = new AbortController();
 
         const timer = setTimeout(() => controller.abort(), timeout);
@@ -211,7 +211,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "HIJACK_SUSPECTED") {
           setErrorMessage(
-            "🌐 识别到 DNS 异常: 这可能是您的 DNS 被运营商 间断性 劫持."
+            "🌐 识别到 DNS 异常: 您的 DNS 可能被 运营商 做了劫持."
           );
           return;
         }
