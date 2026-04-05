@@ -135,7 +135,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           }
 
           // 全挂 → 网络断开
-          if (mainFail && backupFail && cfFail) {
+          if (cfFail) {
             return "NETWORK_DOWN";
           }
 
@@ -217,6 +217,11 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "NETWORK_DOWN") {
           setErrorMessage("🌐 当前网络不可用，您可以尝试刷新页面, 检查网络恢复状况.");
+          return;
+        }
+
+        if (risk === "UNKNOWN") {
+          setErrorMessage("⚠️ 识别到未定义的网络探针, 请稍后重试.");
           return;
         }
 
