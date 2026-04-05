@@ -201,7 +201,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         // =========================
         setErrorMessage("⚠️ 未识别的响应结构，请检查.");
 
-      } catch (err) {
+      } catch {
         // =========================
         // 🌐 网络层异常处理
         // =========================

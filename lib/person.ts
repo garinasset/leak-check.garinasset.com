@@ -21,6 +21,9 @@ export const fieldNameMap: Record<string, string> = {
   source: "泄漏链条",
 };
 
+const PERSON_QUERY_TIMEOUT_MS = 4000;
+const PERSON_QUERY_TIMEOUT_ERROR = "PERSON_QUERY_TIMEOUT";
+
 // 验证规则常量
 const VALIDATION_PATTERNS = {
   // 身份证（大陆 + 台湾）
@@ -102,42 +105,38 @@ export async function getPersonData(
   const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
-  // =========================
-  // ⏱️ ② 超时控制
-  // =========================
-  const fetchWithTimeout = async (
-    url: string,
-    options: RequestInit = {},
-    timeout = 4000
-  ): Promise<Response> => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PERSON_QUERY_TIMEOUT_MS);
 
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-      });
+  let data: Record<string, unknown>;
 
-      return response;
-    } finally {
-      clearTimeout(timer);
+  try {
+    const response = await fetch(API_DIG_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Real-IP": realIP ?? "",
+        "X-Forwarded-For": realIP ?? ""
+      },
+      body: JSON.stringify({ q: normalizedQuery }),
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`查询失败: ${response.status}`);
     }
-  };
 
-  const response = await fetchWithTimeout(API_DIG_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Real-IP": realIP ?? "",
-      "X-Forwarded-For": realIP ?? ""
-    },
-    body: JSON.stringify({ q: normalizedQuery }),
-    cache: "no-store",
-  });
+    data = (await response.json()) as Record<string, unknown>;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(PERSON_QUERY_TIMEOUT_ERROR);
+    }
 
-
-  const data = (await response.json()) as Record<string, unknown>;
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
 
   const sanitized: Record<string, (string | number)[]> = {};
 

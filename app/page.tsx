@@ -43,7 +43,11 @@ async function searchPerson(formData: FormData) {
     return { query, result };
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "查询失败，请稍候再试。";
+      error instanceof Error ? error.message : "接口请求遇到未知异常。";
+
+    if (errorMessage === "PERSON_QUERY_TIMEOUT") {
+      return { error: "接口请求被限定在4秒内, 当前已超时" };
+    }
 
     if (errorMessage.includes("422")) {
       return { status: 422 };
