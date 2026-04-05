@@ -88,42 +88,138 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
     setUserIsEditing(false);
 
     startTransition(async () => {
+      // =========================
+      // ⏱️ 通用：带超时 fetch
+      // =========================
+      const fetchWithTimeout = (url, options = {}, timeout = 4000) => {
+        return Promise.race([
+          fetch(url, options),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("timeout")), timeout)
+          ),
+        ]);
+      };
+
+      // =========================
+      // 🌐 网络风险检测（DNS / 劫持 / 断网）
+      // =========================
+      async function detectNetworkRisk() {
+        try {
+          const results = await Promise.allSettled([
+            fetchWithTimeout("https://leak-check.garinasset.com/", {
+              cache: "no-store",
+            }),
+
+            fetchWithTimeout("https://dev.garinasset.com/", {
+              cache: "no-store",
+            }),
+
+            fetchWithTimeout("https://www.cloudflare.com/cdn-cgi/trace", {
+              cache: "no-store",
+            }),
+          ]);
+
+          const mainFail = results[0].status === "rejected";
+          const backupFail = results[1].status === "rejected";
+          const cfFail = results[2].status === "rejected";
+
+          // 典型：主挂 + 备正常 + CF正常 → 可疑劫持
+          if (mainFail && !backupFail && !cfFail) {
+            return "HIJACK_SUSPECTED";
+          }
+
+          // 主 + 备都挂，但CF正常 → 服务器维护
+          if (mainFail && backupFail && !cfFail) {
+            return "SERVER_MAINTENANCE";
+          }
+
+          // 全挂 → 网络断开
+          if (mainFail && backupFail && cfFail) {
+            return "NETWORK_DOWN";
+          }
+
+          return "OK";
+        } catch {
+          return "UNKNOWN";
+        }
+      }
+
+      // =========================
+      // 🧩 主逻辑
+      // =========================
       try {
         const obfuscatedQuery = await obfuscateData(normalizedQuery);
+
         const formData = new FormData();
         formData.set("q_obfuscated", obfuscatedQuery);
 
         const response = await searchAction(formData);
 
-        if (response.status === 422) {
+        // =========================
+        // 1️⃣ HTTP / 状态层错误
+        // =========================
+        if (response?.status === 422) {
           showInvalidState();
           return;
         }
 
-        if (response.status === 429) {
-          setErrorMessage("⚠️ 频繁请求, 速率降级.");
+        if (response?.status === 429) {
+          setErrorMessage("⚠️ 请求过于频繁，请稍后再试");
           return;
         }
 
-        if (response.status && response.status >= 500) {
-          setErrorMessage("🛠️ 服务器异常，请稍候再试。");
+        if (response?.status && response.status >= 500) {
+          setErrorMessage("🛠️ 服务器异常，请稍后再试");
           return;
         }
 
-        if (response.error) {
+        // =========================
+        // 2️⃣ 业务错误层
+        // =========================
+        if (response?.error) {
           setErrorMessage(`🚧 ${response.error}`);
           return;
         }
 
-        if (response.result) {
+        // =========================
+        // 3️⃣ 成功层
+        // =========================
+        if (response?.result !== undefined) {
           setResult(response.result);
           return;
         }
 
-      } catch {
-        setErrorMessage("🕳️ 未定义的异常，请稍候再试。");
+        // =========================
+        // 4️⃣ 结构异常兜底（唯一入口）
+        // =========================
+        setErrorMessage("⚠️ 未识别的响应结构，请稍后重试");
 
-        // setErrorMessage("🌐 网络异常，请检查你的网络连接。");
+      } catch (err) {
+        // =========================
+        // 🌐 网络层异常处理
+        // =========================
+        const risk = await detectNetworkRisk();
+
+        if (risk === "HIJACK_SUSPECTED") {
+          setErrorMessage(
+            "🌐 DNS 解析异常: 您的 DNS 可能受到了运营商劫持."
+          );
+          return;
+        }
+
+        if (risk === "SERVER_MAINTENANCE") {
+          setErrorMessage(
+            "⚠️ 服务器正在热维护, 可能很快, 也可能很慢, 无论如何, 稍后相见."
+          );
+          return;
+        }
+
+        if (risk === "NETWORK_DOWN") {
+          setErrorMessage("🌐 当前网络不可用，您可以尝试刷新页面, 检查网络恢复状况.");
+          return;
+        }
+
+        setErrorMessage("🕳️ 未知异常，请稍后重试");
       }
     });
   };
