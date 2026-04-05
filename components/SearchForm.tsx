@@ -171,7 +171,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
 
         if (response?.status === 429) {
-          setErrorMessage("⚠️ 请求过于频繁，请稍后再试");
+          setErrorMessage("⚠️ 请求过于频繁, 后续请求会被降级");
           return;
         }
 
@@ -227,11 +227,11 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
 
         if (risk === "UNKNOWN") {
-          setErrorMessage("⚠️ 识别到未定义的网络探针异常, 请稍后重试.");
+          setErrorMessage("⚠️ 识别到未定义的网络探针异常, 请重试.");
           return;
         }
 
-        setErrorMessage("🕳️ 服务器正常, 但网络抖动, 请稍后重试.");
+        setErrorMessage("🕳️ 服务器正常, 但网络抖动, 请重试.");
       }
     });
   };
