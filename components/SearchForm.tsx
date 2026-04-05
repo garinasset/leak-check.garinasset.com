@@ -202,7 +202,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         setErrorMessage("⚠️ 未识别的响应结构，请检查.");
 
       } catch {
-        
+
         setErrorMessage("🛠️ 正在进行异常自检，这可能需要一段时间.");
         // =========================
         // 🌐 网络层异常处理
@@ -211,20 +211,20 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "HIJACK_SUSPECTED") {
           setErrorMessage(
-            "🌐 DNS 解析异常: 您的 DNS 可能受到了运营商 间断性 劫持."
+            "🌐 识别到 DNS 解析异常: 您的 DNS 可能受到了运营商 间断性 劫持."
           );
           return;
         }
 
         if (risk === "SERVER_MAINTENANCE") {
           setErrorMessage(
-            "⚠️ 服务器正在冷维护, 可能很快, 也可能很慢, 稍后相见."
+            "⚠️ 识别到服务器正在冷维护, 可能很快, 也可能很慢, 稍后相见."
           );
           return;
         }
 
         if (risk === "NETWORK_DOWN") {
-          setErrorMessage("🌐 当前网络不可用, 请稍后重试.");
+          setErrorMessage("🌐 识别到当前网络不可用, 请稍后重试.");
           return;
         }
 
@@ -233,7 +233,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           return;
         }
 
-        setErrorMessage("🕳️ 服务器正常, 但网络抖动, 请重试.");
+        setErrorMessage("🕳️ 识别到服务器正常, 但网络抖动.");
       }
     });
   };
@@ -248,6 +248,14 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
   const filteredFields = FIELDS.filter(
     (field) => Array.isArray(result[field]) && result[field].length > 0
+  );
+  const queryHeader = (
+    <div className="flex flex-col items-center space-y-2 mb-6">
+      <QueryTypeDisplay query={normalizedQuery} />
+      <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
+        {normalizedQuery}
+      </div>
+    </div>
   );
 
   return (
@@ -345,45 +353,26 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       </form>
 
       <div className="mt-6 flex min-h-0 w-full flex-1 flex-col">
-        {errorMessage && (
+        {errorMessage ? (
           <div className="w-full max-w-[43em] mx-auto">
-            {/* 第一个特殊字段：SVG */}
-            <div className="flex flex-col items-center space-y-2 mb-6">
-              <QueryTypeDisplay query={normalizedQuery} />
-              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                {normalizedQuery}
-              </div>
-
+            {queryHeader}
+            <div className="flex justify-center">
               <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
                 <span>{errorMessage}</span>
               </div>
-
             </div>
           </div>
-        )}
-
-        {userIsEditing && inputValue ? (
+        ) : userIsEditing && inputValue ? (
           <div className="w-full max-w-[43em] mx-auto">
-            <div className="flex flex-col items-center space-y-2 mb-6">
-              <QueryTypeDisplay query={normalizedQuery} />
-              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                {normalizedQuery}
-              </div>
-            </div>
+            {queryHeader}
           </div>
         ) : is422Error && inputValue ? (
           <div className="w-full max-w-[43em] mx-auto">
-            {/* 第一个特殊字段：SVG */}
-            <div className="flex flex-col items-center space-y-2 mb-6">
-              <QueryTypeDisplay query={normalizedQuery} />
-              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                {normalizedQuery}
-              </div>
-
+            {queryHeader}
+            <div className="flex justify-center">
               <div className="bg-red-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
                 <span>⛔️ 需要输入 身份证 或 电话 或 邮箱 或 QQ 号</span>
               </div>
-
             </div>
           </div>
         ) : Object.keys(result).length === 0 && !isPending ? (
@@ -394,28 +383,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           </div>
         ) : filteredFields.length === 0 && !isPending ? (
           <div className="w-full max-w-[43em] mx-auto">
-            {/* 第一个特殊字段：SVG */}
-            <div className="flex flex-col items-center space-y-2 mb-6">
-              <QueryTypeDisplay query={normalizedQuery} />
-              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                {normalizedQuery}
-              </div>
+            {queryHeader}
+            <div className="flex justify-center">
               <div className="bg-green-600 mt-4 text-white px-4 py-2 rounded-full text-xs font-bold">
                 <span>🔒 安全: 未检测到个人信息 “泄漏”</span>
               </div>
-
             </div>
           </div>
         ) : (
           <div className="w-full max-w-[43em] mx-auto px-2">
-            {/* 第一个特殊字段：SVG */}
-            <div className="flex flex-col items-center space-y-2 mb-6">
-              <QueryTypeDisplay query={normalizedQuery} />
-              <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
-                {normalizedQuery}
-              </div>
-
-            </div>
+            {queryHeader}
             <div className="mt-6">
               <div className="space-y-px">
                 {filteredFields.map((field, idx) => {
