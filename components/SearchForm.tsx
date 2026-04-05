@@ -193,7 +193,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         // =========================
         // 4️⃣ 结构异常兜底（唯一入口）
         // =========================
-        setErrorMessage("⚠️ 未识别的响应结构，请稍后重试");
+        setErrorMessage("⚠️ 未识别的响应结构，请检查.");
 
       } catch (err) {
         // =========================
@@ -210,7 +210,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "SERVER_MAINTENANCE") {
           setErrorMessage(
-            "⚠️ 服务器正在冷维护, 可能很快, 也可能很慢, 无论如何, 稍后相见."
+            "⚠️ 服务器正在冷维护, 可能很快, 也可能很慢, 稍后相见."
           );
           return;
         }
@@ -221,7 +221,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
 
         if (risk === "UNKNOWN") {
-          setErrorMessage("⚠️ 识别来自网络探针的未定义异常, 请稍后重试.");
+          setErrorMessage("⚠️ 识别到未定义的网络探针异常, 请稍后重试.");
           return;
         }
 
