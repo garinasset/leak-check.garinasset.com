@@ -216,7 +216,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
 
         if (risk === "NETWORK_DOWN") {
-          setErrorMessage("🌐 当前网络不可用，您可以尝试刷新页面, 检查网络恢复状况.");
+          setErrorMessage("🌐 当前网络不可用, 请稍后重试.");
           return;
         }
 
@@ -225,7 +225,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           return;
         }
 
-        setErrorMessage("🕳️ 服务器正常, 但数据请求时, 仍触发了异常, 就好像是一个黑洞, 请稍后重试.");
+        setErrorMessage("🕳️ 服务器正常, 但网络抖动, 请稍后重试.");
       }
     });
   };
