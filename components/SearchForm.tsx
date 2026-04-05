@@ -199,7 +199,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         // =========================
         // 4️⃣ 结构异常兜底（唯一入口）
         // =========================
-        setErrorMessage("⚠️ 未识别的响应结构，请检查.");
+        setErrorMessage("⚠️ 未识别的响应结构, 请点击 查询 重试.");
 
       } catch {
 
@@ -211,7 +211,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "HIJACK_SUSPECTED") {
           setErrorMessage(
-            "🌐 识别到 DNS 解析异常: 您的 DNS 可能受到了运营商 间断性 劫持."
+            "🌐 识别到 DNS 异常: 这可能是您的 DNS 被运营商 间断性 劫持."
           );
           return;
         }
@@ -224,16 +224,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         }
 
         if (risk === "NETWORK_DOWN") {
-          setErrorMessage("🌐 识别到当前网络不可用, 请稍后重试.");
+          setErrorMessage("🌐 识别到网络抖动, 请点击 查询 重试.");
           return;
         }
 
         if (risk === "UNKNOWN") {
-          setErrorMessage("⚠️ 识别到未定义的网络探针异常, 请重试.");
+          setErrorMessage("⚠️ 识别到未定义的网络探针异常, 请 刷新页面 重试.");
           return;
         }
 
-        setErrorMessage("🕳️ 识别到服务器正常, 但网络抖动.");
+        setErrorMessage("🕳️ 识别到服务器正常, 但网络抖动, 请点击 查询 重试.");
       }
     });
   };
