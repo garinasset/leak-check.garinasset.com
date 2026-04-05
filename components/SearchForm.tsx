@@ -91,13 +91,19 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       // =========================
       // ⏱️ 通用：带超时 fetch
       // =========================
-      const fetchWithTimeout = (url: string | URL | Request, options = {}, timeout = 4000) => {
-        return Promise.race([
-          fetch(url, options),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("timeout")), timeout)
-          ),
-        ]);
+      const fetchWithTimeout = async (url: string | URL | Request, options = {}, timeout = 4000) => {
+        const controller = new AbortController();
+
+        const timer = setTimeout(() => controller.abort(), timeout);
+
+        try {
+          return await fetch(url, {
+            ...options,
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timer);
+        }
       };
 
       // ================================
@@ -106,7 +112,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       async function detectNetworkRisk() {
         try {
           const results = await Promise.allSettled([
-            fetchWithTimeout("https://leak-check.garinasset.com/", {
+            fetchWithTimeout("https://leak-check.garinasset.com/health", {
               cache: "no-store",
             }),
 
@@ -123,7 +129,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
           const mainFail = results[0].status === "rejected";
           const backupFail = results[1].status === "rejected";
           const cfFail = results[2].status === "rejected";
-
+          // 
           // 典型：主挂 + 备正常 + CF正常 → 可疑劫持
           if (mainFail && !backupFail && !cfFail) {
             return "HIJACK_SUSPECTED";

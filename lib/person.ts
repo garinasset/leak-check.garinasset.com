@@ -105,13 +105,24 @@ export async function getPersonData(
   // =========================
   // ⏱️ ② 超时控制
   // =========================
-  const fetchWithTimeout = (url: string, options: RequestInit, timeout = 4000) => {
-    return Promise.race([
-      fetch(url, options),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("timeout")), timeout)
-      ),
-    ]);
+  const fetchWithTimeout = async (
+    url: string,
+    options: RequestInit = {},
+    timeout = 4000
+  ): Promise<Response> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+
+      return response;
+    } finally {
+      clearTimeout(timer);
+    }
   };
 
   const response = await fetchWithTimeout(API_DIG_URL, {
