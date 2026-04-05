@@ -100,9 +100,9 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
         ]);
       };
 
-      // =========================
-      // 🌐 网络风险检测（DNS / 劫持 / 断网）
-      // =========================
+      // ================================
+      // 🌐 网络风险检测（DNS / 重启 / 断网）
+      // ================================
       async function detectNetworkRisk() {
         try {
           const results = await Promise.allSettled([
