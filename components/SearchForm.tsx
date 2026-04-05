@@ -210,7 +210,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
         if (risk === "SERVER_MAINTENANCE") {
           setErrorMessage(
-            "⚠️ 服务器正在热维护, 可能很快, 也可能很慢, 无论如何, 稍后相见."
+            "⚠️ 服务器正在冷维护, 可能很快, 也可能很慢, 无论如何, 稍后相见."
           );
           return;
         }
