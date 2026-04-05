@@ -105,7 +105,7 @@ export async function getPersonData(
   // =========================
   // ⏱️ ② 超时控制
   // =========================
-  const fetchWithTimeout = (url: string, options: RequestInit, timeout = 8000) => {
+  const fetchWithTimeout = (url: string, options: RequestInit, timeout = 4000) => {
     return Promise.race([
       fetch(url, options),
       new Promise<never>((_, reject) =>
@@ -125,15 +125,8 @@ export async function getPersonData(
     cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`服务器顶级维护: ${response.status}`);
-  }
 
   const data = (await response.json()) as Record<string, unknown>;
-
-  if (!data || typeof data !== "object") {
-    throw new Error("数据解析问题: 检查和服务器的数据约定");
-  }
 
   const sanitized: Record<string, (string | number)[]> = {};
 
