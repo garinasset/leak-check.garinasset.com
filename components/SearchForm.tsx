@@ -115,6 +115,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
             }),
 
             fetchWithTimeout("https://www.cloudflare.com/cdn-cgi/trace", {
+              mode: "no-cors",
               cache: "no-store",
             }),
           ]);
