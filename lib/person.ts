@@ -102,7 +102,19 @@ export async function getPersonData(
   const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
-  const response = await fetch(API_DIG_URL, {
+  // =========================
+  // ⏱️ ② 超时控制
+  // =========================
+  const fetchWithTimeout = (url: string, options: RequestInit, timeout = 8000) => {
+    return Promise.race([
+      fetch(url, options),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), timeout)
+      ),
+    ]);
+  };
+
+  const response = await fetchWithTimeout(API_DIG_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
