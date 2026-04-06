@@ -39,6 +39,8 @@ const VALIDATION_PATTERNS = {
   qq: /^(?!1[3-9]\d{9}$)[1-9]\d{4,10}$/,
 } as const;
 
+export type PersonQueryType = "idCard" | "phone" | "email" | "qq" | "unknown";
+
 export function normalizeQuery(raw: string): string {
   return raw
     .normalize("NFKC")
@@ -64,6 +66,30 @@ export function isValidPersonQuery(raw: string): boolean {
     validateQueryByPattern(query, VALIDATION_PATTERNS.phone) ||
     isValidQQ(query) ||
     validateQueryByPattern(query, VALIDATION_PATTERNS.email);
+}
+
+export function detectPersonQueryType(query: string): PersonQueryType {
+  if (
+    validateQueryByPattern(query, VALIDATION_PATTERNS.idCard)
+  ) {
+    return "idCard";
+  }
+
+  if (
+    validateQueryByPattern(query, VALIDATION_PATTERNS.phone)
+  ) {
+    return "phone";
+  }
+
+  if (validateQueryByPattern(query, VALIDATION_PATTERNS.email)) {
+    return "email";
+  }
+
+  if (isValidQQ(query)) {
+    return "qq";
+  }
+
+  return "unknown";
 }
 
 

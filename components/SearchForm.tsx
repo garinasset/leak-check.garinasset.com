@@ -251,7 +251,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   );
   const queryHeader = (
     <div className="flex flex-col items-center space-y-2 mb-6">
-      <QueryTypeDisplay query={normalizedQuery} />
+      <QueryTypeDisplay normalizedQuery={normalizedQuery} />
       <div className="font-bold break-all text-[0.75rem] underline decoration-dashed result-text-color">
         {normalizedQuery}
       </div>
