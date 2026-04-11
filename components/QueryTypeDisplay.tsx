@@ -1,4 +1,4 @@
-import { detectPersonQueryType } from "../lib/person";
+import { detectPersonQueryType } from "../lib/person/shared";
 
 interface QueryTypeDisplayProps {
     normalizedQuery: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { FIELDS, fieldNameMap, isValidPersonQuery, normalizeQuery } from "../lib/person";
-import { obfuscateData } from "../lib/crypto";
+import { FIELDS, fieldNameMap, isValidPersonQuery, normalizeQuery } from "../lib/person/shared";
+import { obfuscateData } from "../lib/crypto/obfuscation";
 import QueryTypeDisplay from "./QueryTypeDisplay";
 
 interface SearchFormProps {

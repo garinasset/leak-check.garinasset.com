@@ -1,6 +1,6 @@
 export const FIELDS = [
   "id", "name", "receiver", "nickname", "phone", "address",
-  "car", "email", "qq", "weibo", "contact", "company", "source"
+  "car", "email", "qq", "weibo", "contact", "company", "source",
 ];
 
 export const fieldNameMap: Record<string, string> = {
@@ -19,18 +19,10 @@ export const fieldNameMap: Record<string, string> = {
   source: "泄漏链条",
 };
 
-// 验证规则常量
 const VALIDATION_PATTERNS = {
-  // 身份证（大陆 + 台湾）
   idCard: /^(?:\d{17}[\dXx]|[A-Z][12]\d{8})$/,
-
-  // 电话（中国大陆 + 国际E.164）
   phone: /^(?:1[3-9]\d{9}|\+\d{6,15})$/,
-
-  // 邮箱
   email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
-
-  // QQ（排除电话）
   qq: /^(?!1[3-9]\d{9}$)[1-9]\d{4,10}$/,
 } as const;
 
@@ -64,15 +56,11 @@ export function isValidPersonQuery(raw: string): boolean {
 }
 
 export function detectPersonQueryType(query: string): PersonQueryType {
-  if (
-    validateQueryByPattern(query, VALIDATION_PATTERNS.idCard)
-  ) {
+  if (validateQueryByPattern(query, VALIDATION_PATTERNS.idCard)) {
     return "idCard";
   }
 
-  if (
-    validateQueryByPattern(query, VALIDATION_PATTERNS.phone)
-  ) {
+  if (validateQueryByPattern(query, VALIDATION_PATTERNS.phone)) {
     return "phone";
   }
 

@@ -1,5 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Project Structure
+
+```text
+app/                App Router pages and server actions
+components/         Client UI components
+lib/
+	config/           Environment variable access (client/server split)
+	crypto/           Query obfuscation and restoration
+	network/          Request metadata helpers (client IP extraction)
+	person/           Person query domain logic (shared + server)
+```
+
 ## Getting Started
 
 First, run the development server:

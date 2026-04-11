@@ -1,6 +1,7 @@
-import { normalizeQuery } from "../lib/person";
-import { getPersonData, getPersonRecordCount } from "../lib/person.server";
-import { restoreData } from "../lib/crypto";
+import { normalizeQuery } from "../lib/person/shared";
+import { getPersonData, getPersonRecordCount } from "../lib/person/server";
+import { getRequestClientIp } from "../lib/network/request-ip";
+import { restoreData } from "../lib/crypto/obfuscation";
 import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
 import Logo from "../components/Logo";
@@ -32,11 +33,7 @@ async function searchPerson(formData: FormData) {
 
   const query = normalizeQuery(queryRaw);
   const headerList = await headers();
-
-  const realIP =
-    headerList.get("x-forwarded-for")?.split(",")[0] ||
-    headerList.get("x-real-ip") ||
-    "";
+  const realIP = getRequestClientIp(headerList);
 
   try {
     const result = await getPersonData(query, realIP);
@@ -64,11 +61,7 @@ async function searchPerson(formData: FormData) {
 
 export default async function HomePage() {
   const headerList = await headers();
-
-  const realIP =
-    headerList.get("x-forwarded-for")?.split(",")[0] ||
-    headerList.get("x-real-ip") ||
-    "";
+  const realIP = getRequestClientIp(headerList);
 
   const recordCount = await getPersonRecordCount(realIP).catch(() => null);
 

@@ -1,7 +1,7 @@
 import "server-only";
 
-import { API_COUNT_URL, API_DIG_URL, FORWARD_CLIENT_IP } from "./config.server";
-import { FIELDS, normalizeQuery } from "./person";
+import { API_COUNT_URL, API_DIG_URL, FORWARD_CLIENT_IP } from "../config/server";
+import { FIELDS, normalizeQuery } from "./shared";
 
 const PERSON_QUERY_TIMEOUT_MS = 8000;
 const PERSON_QUERY_TIMEOUT_ERROR = "PERSON_QUERY_TIMEOUT";
@@ -17,6 +17,7 @@ function buildForwardedIpHeaders(realIP?: string): Record<string, string> {
   }
 
   return {
+    "X-Client-IP": ip,
     "X-Real-IP": ip,
     "X-Forwarded-For": ip,
   };
