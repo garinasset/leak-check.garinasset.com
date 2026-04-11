@@ -1,21 +1,26 @@
-// 加密混淆 key
-export const NEXT_PUBLIC_OBFUSCATION_KEY =
-    process.env.NEXT_PUBLIC_OBFUSCATION_KEY ?? "leak-check";
 
-// API（服务端专用）
-export const API_COUNT_URL =
-    process.env.API_COUNT_URL;
+// ================================
+// 🚀 强制 env 读取（生产安全）
+// ================================
+function mustGetEnv(name: string): string {
+  const value = process.env[name];
 
-export const API_DIG_URL =
-    process.env.API_DIG_URL;
+  if (!value) {
+    throw new Error(`❌ Missing environment variable: ${name}`);
+  }
 
-// 🚨 强制检查（避免生产 silent bug）
-if (typeof window === "undefined") {
-    if (!API_COUNT_URL) {
-        throw new Error("Missing env: API_COUNT_URL");
-    }
-
-    if (!API_DIG_URL) {
-        throw new Error("Missing env: API_DIG_URL");
-    }
+  return value;
 }
+
+// ================================
+// 🔐 加密混淆 key（现在也强制）
+// ================================
+export const NEXT_PUBLIC_OBFUSCATION_KEY = mustGetEnv(
+  "NEXT_PUBLIC_OBFUSCATION_KEY"
+);
+
+// ================================
+// 🌐 API（服务端专用）
+// ================================
+export const API_COUNT_URL = mustGetEnv("API_COUNT_URL");
+export const API_DIG_URL = mustGetEnv("API_DIG_URL");
