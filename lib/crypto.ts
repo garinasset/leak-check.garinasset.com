@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_OBFUSCATION_KEY } from "./config";
+import { NEXT_PUBLIC_OBFUSCATION_KEY } from "./config.client";
 
 const ALGORITHM = "AES-GCM";
 const IV_LENGTH = 12;

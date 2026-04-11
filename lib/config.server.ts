@@ -1,6 +1,7 @@
+import "server-only";
 
 // ================================
-// 🚀 强制 env 读取（生产安全）
+// 🚀 强制 env 读取
 // ================================
 function mustGetEnv(name: string): string {
   const value = process.env[name];
@@ -13,14 +14,7 @@ function mustGetEnv(name: string): string {
 }
 
 // ================================
-// 🔐 加密混淆 key（现在也强制）
-// ================================
-export const NEXT_PUBLIC_OBFUSCATION_KEY = mustGetEnv(
-  "NEXT_PUBLIC_OBFUSCATION_KEY"
-);
-
-// ================================
-// 🌐 API（服务端专用）
+// 🌐 Server-only API
 // ================================
 export const API_COUNT_URL = mustGetEnv("API_COUNT_URL");
 export const API_DIG_URL = mustGetEnv("API_DIG_URL");

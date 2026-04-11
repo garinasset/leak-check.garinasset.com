@@ -1,4 +1,5 @@
-import { getPersonData, getPersonRecordCount, normalizeQuery } from "../lib/person";
+import { normalizeQuery } from "../lib/person";
+import { getPersonData, getPersonRecordCount } from "../lib/person.server";
 import { restoreData } from "../lib/crypto";
 import Footer from "../components/Footer";
 import SearchForm from "../components/SearchForm";
