@@ -107,16 +107,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
       };
 
       // ================================
-      // 🌐 网络风险检测（DNS / 重启 / 断网）
+      // 🌐 网络检测（DNS / 重启 / 断网）
       // ================================
       async function detectNetworkRisk() {
         try {
           const results = await Promise.allSettled([
-            fetchWithTimeout("https://leak-check.garinasset.com/health", {
+            fetchWithTimeout("https://leak-check.garinasset.com/", {
               cache: "no-store",
             }),
 
-            fetchWithTimeout("https://dev.garinasset.com/", {
+            fetchWithTimeout("https://www.garinasset.com/", {
               cache: "no-store",
             }),
 
