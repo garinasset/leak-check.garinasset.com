@@ -54,6 +54,10 @@ async function searchPerson(formData: FormData) {
       return { status: 422 };
     }
 
+    if (errorMessage.includes("403")) {
+      return { error: "上游接口拒绝访问(403), 请检查后端白名单/WAF策略与 Vercel 出口访问策略" };
+    }
+
     return { error: errorMessage };
   }
 }

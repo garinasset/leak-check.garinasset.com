@@ -1,10 +1,38 @@
 import "server-only";
 
-import { API_COUNT_URL, API_DIG_URL } from "./config.server";
+import { API_COUNT_URL, API_DIG_URL, FORWARD_CLIENT_IP } from "./config.server";
 import { FIELDS, normalizeQuery } from "./person";
 
 const PERSON_QUERY_TIMEOUT_MS = 8000;
 const PERSON_QUERY_TIMEOUT_ERROR = "PERSON_QUERY_TIMEOUT";
+
+function buildForwardedIpHeaders(realIP?: string): Record<string, string> {
+  if (!FORWARD_CLIENT_IP || !realIP) {
+    return {};
+  }
+
+  const ip = realIP.trim();
+  if (!ip || ip.includes(",")) {
+    return {};
+  }
+
+  return {
+    "X-Real-IP": ip,
+    "X-Forwarded-For": ip,
+  };
+}
+
+async function parseErrorDetail(response: Response): Promise<string> {
+  const statusSummary = `${response.status}${response.statusText ? ` ${response.statusText}` : ""}`;
+
+  try {
+    const body = (await response.text()).trim();
+    if (!body) return statusSummary;
+    return `${statusSummary} | ${body.slice(0, 200)}`;
+  } catch {
+    return statusSummary;
+  }
+}
 
 function formatRecordCount(raw: string): string {
   const digitsOnly = raw.replace(/[^\d]/g, "");
@@ -17,18 +45,20 @@ function formatRecordCount(raw: string): string {
 }
 
 export async function getPersonRecordCount(realIP?: string): Promise<string | null> {
+  const forwardedIpHeaders = buildForwardedIpHeaders(realIP);
+
   const response = await fetch(API_COUNT_URL, {
     method: "GET",
     headers: {
       accept: "text/plain",
-      "X-Real-IP": realIP ?? "",
-      "X-Forwarded-For": realIP ?? "",
+      "User-Agent": "leak-check-web/1.0",
+      ...forwardedIpHeaders,
     },
     cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error(`服务器顶级维护: ${response.status}`);
+    throw new Error(`服务器顶级维护: ${await parseErrorDetail(response)}`);
   }
 
   const text = (await response.text()).trim();
@@ -40,6 +70,7 @@ export async function getPersonData(
   q: string,
   realIP?: string
 ): Promise<Record<string, (string | number)[]>> {
+  const forwardedIpHeaders = buildForwardedIpHeaders(realIP);
   const normalizedQuery = normalizeQuery(q);
   if (!normalizedQuery) return {};
 
@@ -53,8 +84,9 @@ export async function getPersonData(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Real-IP": realIP ?? "",
-        "X-Forwarded-For": realIP ?? "",
+        accept: "application/json",
+        "User-Agent": "leak-check-web/1.0",
+        ...forwardedIpHeaders,
       },
       body: JSON.stringify({ q: normalizedQuery }),
       cache: "no-store",
@@ -62,7 +94,7 @@ export async function getPersonData(
     });
 
     if (!response.ok) {
-      throw new Error(`查询失败: ${response.status}`);
+      throw new Error(`查询失败: ${await parseErrorDetail(response)}`);
     }
 
     data = (await response.json()) as Record<string, unknown>;
