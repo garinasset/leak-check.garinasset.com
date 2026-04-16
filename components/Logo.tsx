@@ -1,11 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+
+const CLEAR_SEARCH_FORM_EVENT = "clear-search-form";
 
 export default function Logo() {
+  const handleLogoClick = () => {
+    window.dispatchEvent(new Event(CLEAR_SEARCH_FORM_EVENT));
+  };
+
   return (
-    <Link href="/" className="group inline-flex items-center">
+    <button
+      type="button"
+      onClick={handleLogoClick}
+      aria-label="清空查询并恢复初始状态"
+      className="group inline-flex items-center"
+    >
       <div className="relative w-[128px] h-[128px] overflow-visible">
 
         {/* 🌞 浅色 */}
@@ -41,6 +51,6 @@ export default function Logo() {
         />
 
       </div>
-    </Link>
+    </button>
   );
 }

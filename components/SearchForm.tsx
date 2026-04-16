@@ -13,6 +13,7 @@ interface SearchFormProps {
 const DEFAULT_PLACEHOLDER = "输入 身份证 或 电话 或 邮箱 或 QQ 号";
 const DEFAULT_RESULT_MESSAGE = "你有权了解你的数据处于何种状态。";
 const SHAKE_DURATION = 1000;
+const CLEAR_SEARCH_FORM_EVENT = "clear-search-form";
 
 export default function SearchForm({ searchAction, recordCount }: SearchFormProps) {
   const [inputValue, setInputValue] = useState("");
@@ -25,6 +26,16 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
   const formRef = useRef<HTMLFormElement>(null);
   const searchBoxRef = useRef<HTMLDivElement>(null);
   const normalizedQuery = normalizeQuery(inputValue);
+
+  const resetFormState = () => {
+    formRef.current?.reset();
+    setInputValue("");
+    setErrorMessage("");
+    setIs422Error(false);
+    setResult({});
+    setUserIsEditing(false);
+    searchBoxRef.current?.classList.remove("shake");
+  };
 
   // 清除所有查询状态
   const clearQueryState = () => {
@@ -49,14 +60,8 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
 
   useEffect(() => {
     const initForm = () => {
-      formRef.current?.reset();
-      setInputValue("");
-      setErrorMessage("");
-      setIs422Error(false);
-      setResult({});
+      resetFormState();
       setHasHydrated(true);
-      setUserIsEditing(false);
-      searchBoxRef.current?.classList.remove("shake");
     };
 
     const handlePageShow = (event: PageTransitionEvent) => {
@@ -70,6 +75,18 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClearSearchForm = () => {
+      resetFormState();
+    };
+
+    window.addEventListener(CLEAR_SEARCH_FORM_EVENT, handleClearSearchForm);
+
+    return () => {
+      window.removeEventListener(CLEAR_SEARCH_FORM_EVENT, handleClearSearchForm);
     };
   }, []);
 
@@ -116,7 +133,7 @@ export default function SearchForm({ searchAction, recordCount }: SearchFormProp
               cache: "no-store",
             }),
 
-            fetchWithTimeout("https://www.garinasset.com/", {
+            fetchWithTimeout("https://api.garinasset.com/", {
               cache: "no-store",
             }),
 
