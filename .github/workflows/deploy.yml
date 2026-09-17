@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-beijing:
+    name: Deploy to BEIJING
+    runs-on: self-hosted
+    environment:
+      name: 北京蓟门服务器集群
+
+    steps:
+      - name: Deploy to BEIJING servers
+        run: |
+          ssh -6 \
+            -o StrictHostKeyChecking=no \
+            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_BEIJING }} \
+            "/home/deploy/leak-check.garinasset.com/deploy.sh"
+
+  deploy-shandong:
+    name: Deploy to SHANDONG
+    runs-on: self-hosted
+    environment:
+      name: 山东齐鲁服务器集群
+
+    steps:
+      - name: Deploy to SHANDONG servers
+        run: |
+          ssh -6 \
+            -o StrictHostKeyChecking=no \
+            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_SHANDONG }} \
+            "/home/deploy/leak-check.garinasset.com/deploy.sh"
