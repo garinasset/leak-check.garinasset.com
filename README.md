@@ -1,1 +1,1 @@
-打开 [https://leak-check.garinasset.com](leak-check.garinasset.com) 访问应用.
+打开 [https://leak-check.garinasset.com](https://leak-check.garinasset.com) 访问应用。
