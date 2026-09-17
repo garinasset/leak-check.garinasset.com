@@ -14,11 +14,19 @@ jobs:
 
     steps:
       - name: Deploy to BEIJING servers
+        env:
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           ssh -6 \
             -o StrictHostKeyChecking=no \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_BEIJING }} \
-            "/home/deploy/leak-check.garinasset.com/deploy.sh"
+            "
+            cd /home/deploy/leak-check.garinasset.com &&
+            git fetch origin &&
+            git reset --hard ${COMMIT_SHA} &&
+            chmod +x deploy.sh &&
+            ./deploy.sh
+            "
 
   deploy-shandong:
     name: Deploy to SHANDONG
@@ -28,8 +36,16 @@ jobs:
 
     steps:
       - name: Deploy to SHANDONG servers
+        env:
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           ssh -6 \
             -o StrictHostKeyChecking=no \
             ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_SHANDONG }} \
-            "/home/deploy/leak-check.garinasset.com/deploy.sh"
+            "
+            cd /home/deploy/leak-check.garinasset.com &&
+            git fetch origin &&
+            git reset --hard ${COMMIT_SHA} &&
+            chmod +x deploy.sh &&
+            ./deploy.sh
+            "

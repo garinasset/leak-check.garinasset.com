@@ -15,9 +15,6 @@ APP_DIR="/home/deploy/leak-check.garinasset.com"
 
 cd "$APP_DIR"
 
-echo "==> Pull latest code"
-git pull
-
 echo "==> Install dependencies"
 npm ci
 
