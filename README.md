@@ -1,6 +1,6 @@
-# [https://leak-check.garinasset.com/](https://leak-check.garinasset.com/)
+# [厘查](https://leak-check.garinasset.com)
 
-> 基于 Next.js 的信息泄露检测应用。
+> 基于 Next.js 的 leak-check 官方应用, 背后由 嘉林数据 驱动.
 
 ## 🧩 技术栈
 

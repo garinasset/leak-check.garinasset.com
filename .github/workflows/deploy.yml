@@ -19,7 +19,7 @@ jobs:
         run: |
           ssh -6 \
             -o StrictHostKeyChecking=no \
-            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_BEIJING }} \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_BEIJING }} \
             "
             cd /home/deploy/leak-check.garinasset.com &&
             git fetch origin &&
@@ -41,7 +41,7 @@ jobs:
         run: |
           ssh -6 \
             -o StrictHostKeyChecking=no \
-            ${{ vars.SERVER_USER }}@${{ vars.SERVER_HOST_SHANDONG }} \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_SHANDONG }} \
             "
             cd /home/deploy/leak-check.garinasset.com &&
             git fetch origin &&

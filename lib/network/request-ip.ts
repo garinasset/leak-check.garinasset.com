@@ -5,7 +5,6 @@ type HeaderReader = {
 const CLIENT_IP_HEADER_CANDIDATES = [
   "cf-connecting-ip",
   "true-client-ip",
-  "x-vercel-forwarded-for",
   "x-forwarded-for",
   "x-real-ip",
 ];
