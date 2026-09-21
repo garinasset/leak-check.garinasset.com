@@ -1,6 +1,6 @@
 # [厘查](https://leak-check.garinasset.com)
 
-基于 [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)  的 [leak-check](https://github.com/garinasset/leak-check) 官方应用, [厘查](https://leak-check.garinasset.com) 取意 [leak-check] 谐音, 应用 & 数据 由 嘉林数据 驱动.
+基于 [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=next.js&logoColor=white)](https://nextjs.org/)  的 © 嘉林数据 [leak-check](https://github.com/garinasset/leak-check) 官方应用, [厘查](https://leak-check.garinasset.com) 取意 [leak-check] 谐音, 应用 & 数据 由 © 嘉林数据 驱动.
 
 ## 🧩 技术栈
 
